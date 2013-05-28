@@ -16,4 +16,6 @@
 #define WG_DEF_PERS noise::module::DEFAULT_PERLIN_PERSISTENCE
 #define WG_DEF_LACU noise::module::DEFAULT_PERLIN_LACUNARITY
 
+#define WG_NO_TILE std::numeric_limits<int>::max()
+
 #endif // WG_DEFINES_HPP

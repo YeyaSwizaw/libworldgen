@@ -130,7 +130,7 @@ int WorldGen::defineTile(std::vector<TileConstraint> thresholds) {
 
 } // int WorldGen::defineTile(std::vector<TileConstraint> thresholds);
 
-void WorldGen::generateWorld() {
+std::vector<std::vector<int>> WorldGen::generateWorld() {
 	NoiseMap *nMap;
 
 	for(auto pair : noiseMaps) {
@@ -141,28 +141,27 @@ void WorldGen::generateWorld() {
 		perlin.SetPersistence(nMap->persistence);
 		perlin.SetLacunarity(nMap->lacunarity);
 
-		double xStep = (nMap->x1 - nMap->x0) / mapWidth;
-		double yStep = (nMap->y1 - nMap->y0) / mapHeight;
+		double xStep = (nMap->x1 - nMap->x0) / (mapWidth + 1);
+		double yStep = (nMap->y1 - nMap->y0) / (mapHeight + 1);
 
-		for(double y = nMap->y0; y < nMap->y1; y += yStep) {
+		for(double y = nMap->y0; y <= nMap->y1; y += yStep) {
 			nMap->addRow();
 
-			for(double x = nMap->x0; x < nMap->x1; x += xStep) {
+			for(double x = nMap->x0; x <= nMap->x1; x += xStep) {
 				nMap->addValue(perlin.GetValue(x, y, 0));
-				std::cout << x << ", " << y << ", " << "YAY\n";
 
 			} // for(double x = nMap->x0; x < nMap->x1; x += xStep);
 
 		} // for(double y = nMap->y0; y < nMap->y1; y += yStep);
 
 	} // for(NoiseMap *nMap : noiseMaps);
-
-	// TEST vv
 	
 	bool matchesDefinition = true;
 	bool tileFound = false;
 
 	for(int y = 0; y <= mapHeight; y++) {
+		finalMap.push_back(std::vector<int>());
+
 		for(int x = 0; x <= mapWidth; x++) {
 			tileFound = false;
 			for(auto tDef : tileDefinitions) {
@@ -189,7 +188,7 @@ void WorldGen::generateWorld() {
 				} // for(auto con : tDef.first);
 
 				if(matchesDefinition) {
-					std::cout << tDef.second << " ";
+					finalMap.back().push_back(tDef.second);
 					tileFound = true;
 					break;
 
@@ -198,16 +197,16 @@ void WorldGen::generateWorld() {
 			} // for(auto tDef : tileDefinitions);
 
 			if(!tileFound) {
-				std::cout << "  ";
+				finalMap.back().push_back(WG_NO_TILE);
 
 			} // if(!tileFound);
 
 		} // for(int x = 0; x < mapWidth; x++);
 
-		std::cout << "\n";
-
 	} // for(int y = 0; y > mapHeight; y++);
 
-} // void WorldGen::generateWorld();
+	return finalMap;
+
+} // std::vector<std::vector<int>> WorldGen::generateWorld();
 
 WG_NS_END

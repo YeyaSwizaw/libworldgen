@@ -67,7 +67,7 @@ public:
 	int defineTile(std::initializer_list<TileConstraint> thresholds);
 	int defineTile(std::vector<TileConstraint> thresholds);
 
-	void generateWorld();
+	std::vector<std::vector<int>> generateWorld();
 
 private:
 	int mapWidth, mapHeight;
@@ -77,6 +77,8 @@ private:
 
 	int nextTileId;
 	std::vector<std::pair<std::vector<TileConstraint>, int>> tileDefinitions;
+
+	std::vector<std::vector<int>> finalMap;
 
 	noise::module::Perlin perlin;
 
