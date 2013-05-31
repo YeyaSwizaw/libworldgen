@@ -65,6 +65,7 @@ public:
 
 	int defineTile(std::initializer_list<TileConstraint> thresholds);
 	int defineTile(std::vector<TileConstraint> thresholds);
+	void deleteTile(int id);
 
 	void generateWorld();
 	std::vector<std::vector<int>> getTileMap();
@@ -77,7 +78,8 @@ private:
 	std::unordered_map<int, NoiseMap*> noiseMaps;
 
 	int nextTileId;
-	std::vector<std::pair<std::vector<TileConstraint>, int>> tileDefinitions;
+	std::unordered_map<int, std::vector<TileConstraint>> tileDefinitions;
+	std::vector<int> tilePriorities;
 
 	std::vector<std::vector<int>> finalMap;
 

@@ -118,12 +118,26 @@ int WorldGen::defineTile(std::initializer_list<TileConstraint> thresholds) {
 } // int WorldGen::defineTile(std::initializer_list<TileConstraint> thresholds);
 
 int WorldGen::defineTile(std::vector<TileConstraint> thresholds) {
-	tileDefinitions.push_back(std::make_pair(thresholds, nextTileId));
+	tileDefinitions.insert(std::make_pair(nextTileId, thresholds));
+	tilePriorities.push_back(nextTileId);
 	
 	nextTileId++;
 	return (nextTileId - 1);
 
 } // int WorldGen::defineTile(std::vector<TileConstraint> thresholds);
+
+void WorldGen::deleteTile(int id) {
+	tileDefinitions.erase(id);
+
+	for(auto it = tilePriorities.begin(); it != tilePriorities.end(); ++it) {
+		if(*it == id) {
+			tilePriorities.erase(it);
+
+		} // if(*it == id);
+
+	} // for(auto it = tilePriorities.begin(); it != tilePriorities.end(); ++it);
+
+} // void WorldGen::deleteTile(int id);
 
 void WorldGen::generateWorld() {
 	NoiseMap *nMap;
@@ -159,10 +173,10 @@ void WorldGen::generateWorld() {
 
 		for(int x = 0; x <= mapWidth; x++) {
 			tileFound = false;
-			for(auto tDef : tileDefinitions) {
+			for(auto i : tilePriorities) {
 				matchesDefinition = true;
 
-				for(auto con : tDef.first) {
+				for(auto &con : tileDefinitions.at(i)) {
 					if(con.op == Greater) {
 						if(!(noiseMaps.at(con.nId)->noiseVals[y][x] >= con.val)) {
 							matchesDefinition = false;
@@ -183,13 +197,13 @@ void WorldGen::generateWorld() {
 				} // for(auto con : tDef.first);
 
 				if(matchesDefinition) {
-					finalMap.back().push_back(tDef.second);
+					finalMap.back().push_back(i);
 					tileFound = true;
 					break;
 
 				} // if(matchesDefinition);
 
-			} // for(auto tDef : tileDefinitions);
+			} // for(auto i : tilePriorities);
 
 			if(!tileFound) {
 				finalMap.back().push_back(WG_NO_TILE);

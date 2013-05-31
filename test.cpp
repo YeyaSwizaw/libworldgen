@@ -27,6 +27,8 @@ int main(int argc, char* argv[]) {
 	int tileHighMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.6)});
 	int tilePlains = wg.defineTile({});
 
+	wg.deleteTile(tileHighMnt);
+
 	wg.generateWorld();
 
 	for(auto r : wg.getTileMap()) {
