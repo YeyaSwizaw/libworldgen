@@ -22,11 +22,6 @@ void WorldGen::removeNoiseMap(int id) {
 
 } // void WorldGen::removeNoiseMap(int id);
 
-NoiseMap* WorldGen::getNoiseMap(int id) {
-	return noiseMaps.at(id);
-
-} // NoiseMap* WorldGen::getNoiseMap(int id);
-
 void WorldGen::setNoiseSeed(int id, double value) {
 	noiseMaps.at(id)->seed = value;
 
@@ -130,7 +125,7 @@ int WorldGen::defineTile(std::vector<TileConstraint> thresholds) {
 
 } // int WorldGen::defineTile(std::vector<TileConstraint> thresholds);
 
-std::vector<std::vector<int>> WorldGen::generateWorld() {
+void WorldGen::generateWorld() {
 	NoiseMap *nMap;
 
 	for(auto pair : noiseMaps) {
@@ -205,8 +200,16 @@ std::vector<std::vector<int>> WorldGen::generateWorld() {
 
 	} // for(int y = 0; y > mapHeight; y++);
 
+} // void WorldGen::generateWorld();
+
+std::vector<std::vector<int>> WorldGen::getTileMap() {
 	return finalMap;
 
-} // std::vector<std::vector<int>> WorldGen::generateWorld();
+} // std::vector<std::vector<int>> WorldGen::getTileMap();
+
+std::vector<std::vector<double>> WorldGen::getNoiseMap(int id) {
+	return noiseMaps.at(id)->noiseVals;
+
+} // std::vector<std::vector<double>> WorldGen::getNoiseMap(int id);
 
 WG_NS_END

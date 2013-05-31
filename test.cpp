@@ -27,7 +27,9 @@ int main(int argc, char* argv[]) {
 	int tileHighMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.6)});
 	int tilePlains = wg.defineTile({});
 
-	for(auto r : wg.generateWorld()) {
+	wg.generateWorld();
+
+	for(auto r : wg.getTileMap()) {
 		for(auto t : r) {
 			if(t == tileWater) {
 				std::cout << "[1;34m";

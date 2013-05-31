@@ -37,7 +37,6 @@ public:
 
 	int addNoiseMap();
 	void removeNoiseMap(int id);
-	NoiseMap* getNoiseMap(int id);
 
 	void setMapHeight(int value) { mapHeight = value; }
 	void setMapWidth(int value) { mapWidth = value; }
@@ -67,7 +66,9 @@ public:
 	int defineTile(std::initializer_list<TileConstraint> thresholds);
 	int defineTile(std::vector<TileConstraint> thresholds);
 
-	std::vector<std::vector<int>> generateWorld();
+	void generateWorld();
+	std::vector<std::vector<int>> getTileMap();
+	std::vector<std::vector<double>> getNoiseMap(int id);
 
 private:
 	int mapWidth, mapHeight;
