@@ -2,17 +2,24 @@
 
 WG_NS
 
-NoiseMap::NoiseMap()
-	: seed(0),
-	  x0(WG_DEF_X0), x1(WG_DEF_X1),
-	  y0(WG_DEF_Y0), y1(WG_DEF_Y1),
-	  octaves(WG_DEF_OCTAVES),
-	  frequency(WG_DEF_FREQ),
-	  persistence(WG_DEF_PERS),
-	  lacunarity(WG_DEF_LACU),
+NoiseMap::NoiseMap(double seed, double x0, double x1, double y0, double y1, 
+		int octaves, double frequency, double persistence, double lacunarity) 
+	: seed(seed),
+	  x0(x0), x1(x1), y0(y0), y1(y1),
+	  octaves(octaves),
+	  frequency(frequency),
+	  persistence(persistence),
+	  lacunarity(lacunarity),
 	  isCombination(false) {
 
-} // NoiseMap::NoiseMap();
+} // NoiseMap::NoiseMap(double seed, double x0, double x1, double y0, double y1, 
+		//int octaves, double frequency, double persistence, double lacunarity);
+
+NoiseMap::NoiseMap(std::vector<std::pair<int, int>> cmbVect) 
+	: isCombination(true),
+	  combinations(cmbVect) {
+
+} // NoiseMap::NoiseMap(std::vector<std::pair<int, int>> cmbVect);
 
 void NoiseMap::addRow() {
 	noiseVals.push_back(std::vector<double>());

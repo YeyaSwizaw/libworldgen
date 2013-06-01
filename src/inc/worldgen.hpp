@@ -33,9 +33,16 @@ struct TileConstraint {
 
 class WorldGen {
 public:
-	WorldGen();
+	WorldGen(int mapWidth = WG_DEF_W, int mapHeight = WG_DEF_H);
 
-	int addNoiseMap();
+	int addNoiseMap(double seed = 0, 
+			double x0 = WG_DEF_X0, double x1 = WG_DEF_X1,
+			double y0 = WG_DEF_Y0, double y1 = WG_DEF_Y1,
+			int octaves = WG_DEF_OCTAVES,
+			double frequency = WG_DEF_FREQ,
+			double persistence = WG_DEF_PERS,
+			double lacunarity = WG_DEF_LACU);
+
 	void removeNoiseMap(int id);
 
 	int addNoiseCombination(std::initializer_list<std::pair<int, int>> combList);

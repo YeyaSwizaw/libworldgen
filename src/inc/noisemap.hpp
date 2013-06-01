@@ -14,20 +14,12 @@ typedef std::vector<std::vector<double>> NoiseValues;
 class WorldGen;
 
 class NoiseMap {
-public:
-	NoiseMap();
-
-	typedef NoiseValues::iterator iterator;
-	typedef NoiseValues::const_iterator const_iterator;
-	iterator begin() { return noiseVals.begin(); }
-	const_iterator begin() const { return noiseVals.begin(); }
-	iterator end() { return noiseVals.end(); }
-	const_iterator end() const { return noiseVals.end(); }
-
-	std::vector<double> operator[](int v) { return noiseVals[v]; }
-	
 private:
 	friend class WorldGen;
+	NoiseMap(double seed, double x0, double x1, double y0, double y1,
+			int octaves, double frequency, double persistence, double lacunarity);
+
+	NoiseMap(std::vector<std::pair<int, int>> cmbVect);
 	
 	double seed;
 	double x0, x1;

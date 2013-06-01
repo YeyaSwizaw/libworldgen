@@ -2,19 +2,23 @@
 
 WG_NS
 
-WorldGen::WorldGen()
-	: mapWidth(WG_DEF_W), mapHeight(WG_DEF_H),
+WorldGen::WorldGen(int mapWidth, int mapHeight)
+	: mapWidth(mapWidth), mapHeight(mapHeight),
 	  nextId(0), nextTileId(0) {
 
-} // WorldGen::WorldGen();
+} // WorldGen::WorldGen(int mapWidth, int mapHeight);
 
-int WorldGen::addNoiseMap() {
-	noiseMaps.insert(std::make_pair(nextId, new NoiseMap));
+int WorldGen::addNoiseMap(double seed, double x0, double x1, double y0, double y1, 
+		int octaves, double frequency, double persistence, double lacunarity) {
+
+	noiseMaps.insert(std::make_pair(nextId,
+			new NoiseMap(seed, x0, x1, y0, y1, octaves, frequency, persistence, lacunarity)));
+
 	nextId++;
-
 	return (nextId - 1);
 
-} // int WorldGen::addNoiseMap();
+} // int WorldGen::addNoiseMap(double seed, double x0, double x1, double y0, double y1, 
+		// int octaves, double frequency, double persistence, double lacunarity);
 
 void WorldGen::removeNoiseMap(int id) {
 	if(noiseMaps.at(id)->isCombination) {
@@ -40,10 +44,7 @@ int WorldGen::addNoiseCombination(std::initializer_list<std::pair<int, int>> com
 } // int WorldGen::addNoiseCombination(std::initializer_list<std::pair<int, int>> combList);
 
 int WorldGen::addNoiseCombination(std::vector<std::pair<int, int>> combVect) {
-	noiseMaps.insert(std::make_pair(nextId, new NoiseMap));
-
-	noiseMaps.at(nextId)->isCombination = true;
-	noiseMaps.at(nextId)->combinations = combVect;
+	noiseMaps.insert(std::make_pair(nextId, new NoiseMap(combVect)));
 
 	cmbPriorities.push_back(nextId);
 

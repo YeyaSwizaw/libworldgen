@@ -4,31 +4,24 @@
 #include "src/inc/worldgen.hpp"
 
 int main(int argc, char* argv[]) {
-	WG::WorldGen wg;
-
-	wg.setMapHeight(40);
-	wg.setMapWidth(80);
+	WG::WorldGen wg(80, 40);
 	
 	srand(time(NULL));
 
-	int hmap1 = wg.addNoiseMap();
-	wg.setNoiseSeed(hmap1, rand());
+	int hmap1 = wg.addNoiseMap(rand());
 	wg.setNoiseX1(hmap1, 3);
 	wg.setNoiseY1(hmap1, 2);
 
-	int hmap2 = wg.addNoiseMap();
-	wg.setNoiseSeed(hmap2, rand());
+	int hmap2 = wg.addNoiseMap(rand());
 	wg.setNoiseX1(hmap2, 15);
 	wg.setNoiseY1(hmap2, 10);
 
 	int heightmap = wg.addNoiseCombination({std::make_pair(hmap1, 20), std::make_pair(hmap2, 5)});
 
-	int rainfall = wg.addNoiseMap();
-	wg.setNoiseSeed(rainfall, rand());
+	int rainfall = wg.addNoiseMap(rand());
 	wg.setNoiseX1(rainfall, 1.5);
 	wg.setNoiseY1(rainfall, 1);
 
-	int tileDeepWater = wg.defineTile({WG::TileConstraint(heightmap, WG::Less, -0.75)});
 	int tileWater = wg.defineTile({WG::TileConstraint(heightmap, WG::Less, -0.4)});
 	int tileHighMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.55)});
 	int tileMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.2)});
@@ -38,14 +31,10 @@ int main(int argc, char* argv[]) {
 
 	for(auto r : wg.getTileMap()) {
 		for(auto t : r) {
-			if(t == tileDeepWater) {
+			if(t == tileWater) {
 				std::cout << "[0;34m";
 
-			} // if(t == tileDeepWater);
-			else if(t == tileWater) {
-				std::cout << "[1;34m";
-
-			} // else if(t == tileWater);
+			} // if(t == tileWater);
 			else if(t == tileMnt) {
 				std::cout << "[0;37m";
 
