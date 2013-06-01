@@ -17,10 +17,40 @@ int WorldGen::addNoiseMap() {
 } // int WorldGen::addNoiseMap();
 
 void WorldGen::removeNoiseMap(int id) {
+	if(noiseMaps.at(id)->isCombination) {
+		for(auto it = cmbPriorities.begin(); it != cmbPriorities.end(); ++it) {
+			if(*it == id) {
+				cmbPriorities.erase(it);
+				break;
+
+			} // if(*it == id);
+
+		} // for(auto it = cmbPriorities.begin(); it != cmbPriorities.end(); ++it);
+
+	} // if(noiseMaps.at(id)->isCombination);
+
 	delete (noiseMaps.at(id));
 	noiseMaps.erase(id);
 
 } // void WorldGen::removeNoiseMap(int id);
+
+int WorldGen::addNoiseCombination(std::initializer_list<std::pair<int, int>> combList) {
+	return addNoiseCombination(std::vector<std::pair<int, int>>(combList));
+
+} // int WorldGen::addNoiseCombination(std::initializer_list<std::pair<int, int>> combList);
+
+int WorldGen::addNoiseCombination(std::vector<std::pair<int, int>> combVect) {
+	noiseMaps.insert(std::make_pair(nextId, new NoiseMap));
+
+	noiseMaps.at(nextId)->isCombination = true;
+	noiseMaps.at(nextId)->combinations = combVect;
+
+	cmbPriorities.push_back(nextId);
+
+	nextId++;
+	return (nextId - 1);
+
+} // int WorldGen::addNoiseCombination(std::vector<std::pair<int, int>> combVect);
 
 void WorldGen::setNoiseSeed(int id, double value) {
 	noiseMaps.at(id)->seed = value;
@@ -144,34 +174,65 @@ void WorldGen::generateWorld() {
 
 	for(auto pair : noiseMaps) {
 		nMap = pair.second;
-		perlin.SetSeed(nMap->seed);
-		perlin.SetOctaveCount(nMap->octaves);
-		perlin.SetFrequency(nMap->frequency);
-		perlin.SetPersistence(nMap->persistence);
-		perlin.SetLacunarity(nMap->lacunarity);
 
-		double xStep = (nMap->x1 - nMap->x0) / (mapWidth + 1);
-		double yStep = (nMap->y1 - nMap->y0) / (mapHeight + 1);
+		if(!(nMap->isCombination)) {
+			perlin.SetSeed(nMap->seed);
+			perlin.SetOctaveCount(nMap->octaves);
+			perlin.SetFrequency(nMap->frequency);
+			perlin.SetPersistence(nMap->persistence);
+			perlin.SetLacunarity(nMap->lacunarity);
 
-		for(double y = nMap->y0; y <= nMap->y1; y += yStep) {
-			nMap->addRow();
+			double xStep = (nMap->x1 - nMap->x0) / (mapWidth + 1);
+			double yStep = (nMap->y1 - nMap->y0) / (mapHeight + 1);
 
-			for(double x = nMap->x0; x <= nMap->x1; x += xStep) {
-				nMap->addValue(perlin.GetValue(x, y, 0));
+			for(double y = nMap->y0; y <= nMap->y1; y += yStep) {
+				nMap->addRow();
 
-			} // for(double x = nMap->x0; x < nMap->x1; x += xStep);
+				for(double x = nMap->x0; x <= nMap->x1; x += xStep) {
+					nMap->addValue(perlin.GetValue(x, y, 0));
 
-		} // for(double y = nMap->y0; y < nMap->y1; y += yStep);
+				} // for(double x = nMap->x0; x < nMap->x1; x += xStep);
+
+			} // for(double y = nMap->y0; y < nMap->y1; y += yStep);
+
+		} // if(!(nMap->isCombination));
 
 	} // for(NoiseMap *nMap : noiseMaps);
+
+	double val;
+	int factor;
+
+	for(auto i : cmbPriorities) {
+		nMap = noiseMaps.at(i);
+
+		for(int y = 0; y < mapHeight; y++) {
+			nMap->addRow();
+
+			for(int x = 0; x < mapWidth; x++) {
+				val = 0;
+				factor = 0;
+
+				for(auto &pair : nMap->combinations) {
+					val += (pair.second * noiseMaps.at(pair.first)->noiseVals[y][x]);
+					factor += (pair.second);
+
+				} // for(auto *pair : nMap->combinations);
+
+				nMap->addValue(val / factor);
+
+			} // for(int x = 0; x <= mapWidth; x++);
+
+		} // for(int y = 0; y <= mapHeight; y++);
+
+	} // for(auto i : cmbs);
 	
 	bool matchesDefinition = true;
 	bool tileFound = false;
 
-	for(int y = 0; y <= mapHeight; y++) {
+	for(int y = 0; y < mapHeight; y++) {
 		finalMap.push_back(std::vector<int>());
 
-		for(int x = 0; x <= mapWidth; x++) {
+		for(int x = 0; x < mapWidth; x++) {
 			tileFound = false;
 			for(auto i : tilePriorities) {
 				matchesDefinition = true;

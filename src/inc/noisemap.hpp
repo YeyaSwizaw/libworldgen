@@ -43,6 +43,9 @@ private:
 
 	std::vector<double> noiseThresholds;
 
+	bool isCombination;
+	std::vector<std::pair<int, int>> combinations;
+
 }; // class NoiseMap;
 
 WG_NS_END

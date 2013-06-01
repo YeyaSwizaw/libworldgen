@@ -38,6 +38,9 @@ public:
 	int addNoiseMap();
 	void removeNoiseMap(int id);
 
+	int addNoiseCombination(std::initializer_list<std::pair<int, int>> combList);
+	int addNoiseCombination(std::vector<std::pair<int, int>> combVect);
+
 	void setMapHeight(int value) { mapHeight = value; }
 	void setMapWidth(int value) { mapWidth = value; }
 	int getMapHeight() { return mapHeight; }
@@ -76,6 +79,8 @@ private:
 
 	int nextId;
 	std::unordered_map<int, NoiseMap*> noiseMaps;
+
+	std::vector<int> cmbPriorities;
 
 	int nextTileId;
 	std::unordered_map<int, std::vector<TileConstraint>> tileDefinitions;

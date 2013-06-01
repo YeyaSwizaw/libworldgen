@@ -9,7 +9,8 @@ NoiseMap::NoiseMap()
 	  octaves(WG_DEF_OCTAVES),
 	  frequency(WG_DEF_FREQ),
 	  persistence(WG_DEF_PERS),
-	  lacunarity(WG_DEF_LACU) {
+	  lacunarity(WG_DEF_LACU),
+	  isCombination(false) {
 
 } // NoiseMap::NoiseMap();
 
