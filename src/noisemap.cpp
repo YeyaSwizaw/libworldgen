@@ -2,7 +2,7 @@
 
 WG_NS
 
-NoiseMap::NoiseMap(double seed, double x0, double x1, double y0, double y1, 
+NoiseMap::NoiseMap(std::string seed, double x0, double x1, double y0, double y1, 
 		int octaves, double frequency, double persistence, double lacunarity) 
 	: seed(seed),
 	  x0(x0), x1(x1), y0(y0), y1(y1),
@@ -12,7 +12,7 @@ NoiseMap::NoiseMap(double seed, double x0, double x1, double y0, double y1,
 	  lacunarity(lacunarity),
 	  isCombination(false) {
 
-} // NoiseMap::NoiseMap(double seed, double x0, double x1, double y0, double y1, 
+} // NoiseMap::NoiseMap(std::string seed, double x0, double x1, double y0, double y1, 
 		//int octaves, double frequency, double persistence, double lacunarity);
 
 NoiseMap::NoiseMap(std::vector<std::pair<int, int>> cmbVect) 

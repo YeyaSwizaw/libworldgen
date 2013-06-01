@@ -35,7 +35,7 @@ class WorldGen {
 public:
 	WorldGen(int mapWidth = WG_DEF_W, int mapHeight = WG_DEF_H);
 
-	int addNoiseMap(double seed = 0, 
+	int addNoiseMap(std::string seed = "0",
 			double x0 = WG_DEF_X0, double x1 = WG_DEF_X1,
 			double y0 = WG_DEF_Y0, double y1 = WG_DEF_Y1,
 			int octaves = WG_DEF_OCTAVES,
@@ -53,7 +53,7 @@ public:
 	int getMapHeight() { return mapHeight; }
 	int getMapWidth() { return mapWidth; }
 
-	void setNoiseSeed(int id, double value);
+	void setNoiseSeed(int id, std::string value);
 	void setNoiseX0(int id, double value);
 	void setNoiseX1(int id, double value);
 	void setNoiseY0(int id, double value);
@@ -63,7 +63,7 @@ public:
 	void setNoisePersistence(int id, double value);
 	void setNoiseLacunarity(int id, double value);
 
-	double getNoiseSeed(int id);
+	std::string getNoiseSeed(int id);
 	double getNoiseX0(int id);
 	double getNoiseX1(int id);
 	double getNoiseY0(int id);

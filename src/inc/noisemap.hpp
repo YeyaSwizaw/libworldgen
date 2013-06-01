@@ -2,6 +2,7 @@
 #define WG_NOISEMAP_HPP
 
 #include <vector>
+#include <string>
 
 #include "defines.hpp"
 
@@ -16,12 +17,12 @@ class WorldGen;
 class NoiseMap {
 private:
 	friend class WorldGen;
-	NoiseMap(double seed, double x0, double x1, double y0, double y1,
+	NoiseMap(std::string seed, double x0, double x1, double y0, double y1,
 			int octaves, double frequency, double persistence, double lacunarity);
 
 	NoiseMap(std::vector<std::pair<int, int>> cmbVect);
 	
-	double seed;
+	std::string seed;
 	double x0, x1;
 	double y0, y1;
 	int octaves;

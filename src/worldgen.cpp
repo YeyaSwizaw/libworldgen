@@ -8,7 +8,7 @@ WorldGen::WorldGen(int mapWidth, int mapHeight)
 
 } // WorldGen::WorldGen(int mapWidth, int mapHeight);
 
-int WorldGen::addNoiseMap(double seed, double x0, double x1, double y0, double y1, 
+int WorldGen::addNoiseMap(std::string seed, double x0, double x1, double y0, double y1, 
 		int octaves, double frequency, double persistence, double lacunarity) {
 
 	noiseMaps.insert(std::make_pair(nextId,
@@ -17,7 +17,7 @@ int WorldGen::addNoiseMap(double seed, double x0, double x1, double y0, double y
 	nextId++;
 	return (nextId - 1);
 
-} // int WorldGen::addNoiseMap(double seed, double x0, double x1, double y0, double y1, 
+} // int WorldGen::addNoiseMap(std::string seed, double x0, double x1, double y0, double y1, 
 		// int octaves, double frequency, double persistence, double lacunarity);
 
 void WorldGen::removeNoiseMap(int id) {
@@ -53,10 +53,10 @@ int WorldGen::addNoiseCombination(std::vector<std::pair<int, int>> combVect) {
 
 } // int WorldGen::addNoiseCombination(std::vector<std::pair<int, int>> combVect);
 
-void WorldGen::setNoiseSeed(int id, double value) {
+void WorldGen::setNoiseSeed(int id, std::string value) {
 	noiseMaps.at(id)->seed = value;
 
-} // void WorldGen::setNoiseSeed(int id, double value);
+} // void WorldGen::setNoiseSeed(int id, std::string value);
 
 void WorldGen::setNoiseX0(int id, double value) {
 	noiseMaps.at(id)->x0 = value;
@@ -98,10 +98,10 @@ void WorldGen::setNoiseLacunarity(int id, double value) {
 
 } // void WorldGen::setNoiseLacunarity(int id, double value);
 
-double WorldGen::getNoiseSeed(int id) {
+std::string WorldGen::getNoiseSeed(int id) {
 	return noiseMaps.at(id)->seed;
 
-} // double WorldGen::getNoiseSeed(int id);
+} // std::string WorldGen::getNoiseSeed(int id);
 
 double WorldGen::getNoiseX0(int id) {
 	return noiseMaps.at(id)->x0;
@@ -177,7 +177,7 @@ void WorldGen::generateWorld() {
 		nMap = pair.second;
 
 		if(!(nMap->isCombination)) {
-			perlin.SetSeed(nMap->seed);
+			perlin.SetSeed(std::hash<std::string>()(nMap->seed));
 			perlin.SetOctaveCount(nMap->octaves);
 			perlin.SetFrequency(nMap->frequency);
 			perlin.SetPersistence(nMap->persistence);

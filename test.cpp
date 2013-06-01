@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <cstdlib>
 
 #include "src/inc/worldgen.hpp"
@@ -8,17 +9,17 @@ int main(int argc, char* argv[]) {
 	
 	srand(time(NULL));
 
-	int hmap1 = wg.addNoiseMap(rand());
+	int hmap1 = wg.addNoiseMap(std::to_string(rand()));
 	wg.setNoiseX1(hmap1, 3);
 	wg.setNoiseY1(hmap1, 2);
 
-	int hmap2 = wg.addNoiseMap(rand());
+	int hmap2 = wg.addNoiseMap(std::to_string(rand()));
 	wg.setNoiseX1(hmap2, 15);
 	wg.setNoiseY1(hmap2, 10);
 
 	int heightmap = wg.addNoiseCombination({std::make_pair(hmap1, 20), std::make_pair(hmap2, 5)});
 
-	int rainfall = wg.addNoiseMap(rand());
+	int rainfall = wg.addNoiseMap(std::to_string(rand()));
 	wg.setNoiseX1(rainfall, 1.5);
 	wg.setNoiseY1(rainfall, 1);
 
@@ -29,6 +30,7 @@ int main(int argc, char* argv[]) {
 
 	wg.generateWorld();
 
+	std::cout << wg.getNoiseSeed(hmap1) << ";" << wg.getNoiseSeed(hmap2) << ";" << wg.getNoiseSeed(rainfall) << "\n";
 	for(auto r : wg.getTileMap()) {
 		for(auto t : r) {
 			if(t == tileWater) {
