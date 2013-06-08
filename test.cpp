@@ -23,9 +23,10 @@ int main(int argc, char* argv[]) {
 	wg.setNoiseX1(rainfall, 1.5);
 	wg.setNoiseY1(rainfall, 1);
 
-	int tileWater = wg.defineTile({WG::TileConstraint(heightmap, WG::Less, -0.4)});
+	int tileWater = wg.defineTile({WG::TileConstraint(heightmap, WG::Less, -0.3)});
 	int tileHighMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.55)});
 	int tileMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.2)});
+	int tileDesert = wg.defineTile({WG::TileConstraint(rainfall, WG::Less, -0.3)});
 	int tilePlains = wg.defineTile({});
 
 	wg.generateWorld();
@@ -49,6 +50,10 @@ int main(int argc, char* argv[]) {
 				std::cout << "[0;32m";
 
 			} // else if(t == tilePlains);
+			else if(t == tileDesert) {
+				std::cout << "[0;33m";
+
+			} // else if(t == tileDesert);
 
 			std::cout << t << " ";
 
