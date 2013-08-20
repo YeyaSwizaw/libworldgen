@@ -90,4 +90,16 @@ private:
 
 WG_NS_END
 
+#include "constraint.hpp"
+
+wg::Constraint operator<(wg::NoiseMap::Ptr lhs, double rhs) {
+	return wg::Constraint(lhs, wg::Constraint::Type::LT, rhs);
+
+} // Constraint operator<(NoiseMap::Ptr lhs, double rhs);
+
+wg::Constraint operator>(wg::NoiseMap::Ptr lhs, double rhs) {
+	return wg::Constraint(lhs, wg::Constraint::Type::GT, rhs);
+
+} // Constraint operator<(NoiseMap::Ptr lhs, double rhs);
+
 #endif // WG_NOISEMAP_HPP
