@@ -22,33 +22,97 @@
 
 WG_NS
 
-NoiseMap::NoiseMap(std::string seed, double x0, double x1, double y0, double y1, 
-		int octaves, double frequency, double persistence, double lacunarity) 
-	: seed(seed),
-	  x0(x0), x1(x1), y0(y0), y1(y1),
-	  octaves(octaves),
-	  frequency(frequency),
-	  persistence(persistence),
-	  lacunarity(lacunarity),
+NoiseMap::NoiseMap()
+	: seed(WG_DEF_SEED),
+	  gridSizeX(WG_DEF_GRID), gridSizeY(WG_DEF_GRID),
+	  octaves(WG_DEF_OCTAVES),
+	  frequency(WG_DEF_FREQ),
+	  persistence(WG_DEF_PERS),
+	  lacunarity(WG_DEF_LACU),
+
 	  isCombination(false) {
 
-} // NoiseMap::NoiseMap(std::string seed, double x0, double x1, double y0, double y1, 
-		//int octaves, double frequency, double persistence, double lacunarity);
+} // NoiseMap::NoiseMap();
 
-NoiseMap::NoiseMap(std::vector<std::pair<int, int>> cmbVect) 
-	: isCombination(true),
-	  combinations(cmbVect) {
+NoiseMap::NoiseMap(bool combination)
+	: isCombination(true) {
 
-} // NoiseMap::NoiseMap(std::vector<std::pair<int, int>> cmbVect);
+} // NoiseMap::NoiseMap(bool combination);
 
-void NoiseMap::addRow() {
-	noiseVals.push_back(std::vector<double>());
+NoiseMap::Ptr NoiseMap::add(Ptr noiseMap, int factor) {
+	combinations.push_back(std::make_pair(noiseMap, factor));
 
-} // void NoiseMap::addRow();
+	return shared_from_this();
 
-void NoiseMap::addValue(double value) {
-	noiseVals.back().push_back(value);
+} // Ptr NoiseMap::add(Ptr noiseMap, int factor);
 
-} // void NoiseMap::addValue(double value);
+NoiseMap::Ptr NoiseMap::generate(int width, int height) {
+	if(isCombination) {
+		genCombination(width, height);
+
+	} // if(isCombination);
+	else {
+		genNormal(width, height);
+
+	} // else;
+
+	generated = true;
+
+	return shared_from_this();
+
+} // NoiseMap::Ptr NoiseMap::generate(int width, int height);
+
+void NoiseMap::genNormal(int width, int height) {
+	Generator gen(seed, gridSizeX, gridSizeY, octaves,
+			frequency, persistence, lacunarity);
+
+	for(int y = 0; y < height; ++y) {
+		noiseVals.push_back(std::vector<double>());
+
+		for(int x = 0; x < width; ++x) {
+			noiseVals.back().push_back(gen(x, y));
+
+		} // for(int x = 0; x < width; ++x);
+
+	} // for(int y = 0; y < width; ++y);
+
+} // void NoiseMap::genNormal(int width, int height);
+
+void NoiseMap::genCombination(int width, int height) {
+	noiseVals.resize(height);
+	for(auto& row : noiseVals) {
+		row.resize(width, 0.0);
+
+	} // for(auto& row : noiseVals);
+
+	int totalFactor = 0;
+
+	for(auto& comb : combinations) {
+		totalFactor += abs(comb.second);
+
+		if(!(comb.first->generated)) {
+			comb.first->generate(width, height);
+
+		} // if(!(comb.first->generated));
+
+		for(int x = 0; x < width; ++x) {
+			for(int y = 0; y < height; ++y) {
+				noiseVals[y][x] += (comb.first->noiseVals[y][x] * comb.second);
+
+			} // for(int y = 0; y < height; ++y);
+
+		} // for(int x = 0; x < width; ++x);
+
+	} // for(auto& comb : combinations);
+
+	for(auto& row : noiseVals) {
+		for(auto& val : row) {
+			val /= totalFactor;
+
+		} // for(auto& val : row);
+
+	} // for(auto& row : noiseVals);
+
+} // void NoiseMap::genCombination(int width, int height);
 
 WG_NS_END

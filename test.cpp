@@ -8,37 +8,67 @@
 #include <string>
 #include <cstdlib>
 
-#include "src/inc/worldgen.hpp"
+#include "src/inc/noisemap.hpp"
 
 int main(int argc, char* argv[]) {
-	WG::WorldGen wg(80, 40);
-	
 	srand(time(NULL));
 
-	int hmap1 = wg.addNoiseMap(std::to_string(rand()));
-	wg.setNoiseX1(hmap1, 3);
-	wg.setNoiseY1(hmap1, 2);
+	wg::NoiseMap::Ptr hmap1 = wg::NoiseMap::create()
+		->setSeed(std::to_string(rand()))
+		->setGridSize(0.05);
 
-	int hmap2 = wg.addNoiseMap(std::to_string(rand()));
-	wg.setNoiseX1(hmap2, 15);
-	wg.setNoiseY1(hmap2, 10);
+	wg::NoiseMap::Ptr hmap2 = wg::NoiseMap::create()
+		->setSeed(std::to_string(rand()))
+		->setGridSize(0.5);
 
-	int heightmap = wg.addNoiseCombination({std::make_pair(hmap1, 20), std::make_pair(hmap2, 5)});
+	wg::NoiseMap::Ptr heightmap = wg::NoiseMap::combination()
+		->add(hmap1, 20)->add(hmap2, 5);
 
-	int rainfall = wg.addNoiseMap(std::to_string(rand()));
-	wg.setNoiseX1(rainfall, 1.5);
-	wg.setNoiseY1(rainfall, 1);
+	wg::NoiseMap::Ptr rainfall = wg::NoiseMap::create()
+		->setSeed(std::to_string(rand()))
+		->setGridSize(0.01);
 
-	int tileWater = wg.defineTile({WG::TileConstraint(heightmap, WG::Less, -0.3)});
-	int tileHighMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.55)});
-	int tileMnt = wg.defineTile({WG::TileConstraint(heightmap, WG::Greater, 0.2)});
-	int tileDesert = wg.defineTile({WG::TileConstraint(rainfall, WG::Less, -0.3)});
-	int tilePlains = wg.defineTile({});
+	// wg::World::Ptr w = wg::World::create();
 
-	wg.generateWorld();
+	/*
+	wg::TileDef::Ptr tileWater = w->newTile()->addConstraint(heightmap < -0.3);
+	wg::TileDef::Ptr tileHighMnt = w->newTile()->addConstraint(heightmap > 0.55);
+	wg::TileDef::Ptr tileMnt = w->newTile()->addConstraint(heightmap > 0.2);
+	wg::TileDef::Ptr tileDesert = w->newTile()->addConstraint(rainfall < -0.3);
+	wg::TileDef::Ptr tilePlains = w->newTile();
+	*/
 
-	std::cout << wg.getNoiseSeed(hmap1) << ";" << wg.getNoiseSeed(hmap2) << ";" << wg.getNoiseSeed(rainfall) << "\n";
-	for(auto r : wg.getTileMap()) {
+	rainfall->generate(10, 10);
+	heightmap->generate(10, 10);
+
+	std::cout << hmap1->getSeed() << ";" << hmap2->getSeed() << ";" << rainfall->getSeed() << std::endl;
+
+	for(auto vals : rainfall->getValues()) {
+		for(double v : vals) {
+			std::cout << v << ",";
+
+		} // for(double v : vals);
+
+		std::cout << std::endl;
+
+	} // for(auto vals : rainfall->getValues());
+
+	std::cout << std::endl;
+
+	for(auto vals : heightmap->getValues()) {
+		for(double v : vals) {
+			std::cout << v << ",";
+
+		} // for(double v : vals);
+
+		std::cout << std::endl;
+
+	} // for(auto vals : rainfall->getValues());
+
+
+
+	/*;
+	for(auto r : w->getTileMap()) {
 		for(auto t : r) {
 			if(t == tileWater) {
 				std::cout << "[0;34m";
@@ -67,8 +97,9 @@ int main(int argc, char* argv[]) {
 
 		std::cout << "\n";
 
-	} // for(auto r : wg.generateWorld());
+	} // for(auto r : w->getTileMap());
 
 	std::cout << "[0m";
+	*/
 
 } // int main(int argc, char* argv[]);

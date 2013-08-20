@@ -21,43 +21,70 @@
 #ifndef WG_NOISEMAP_HPP
 #define WG_NOISEMAP_HPP
 
+#include <memory>
 #include <vector>
 #include <string>
 
 #include "defines.hpp"
+#include "generator.hpp"
 
 #include <noise/noise.h>
 
 WG_NS
 
-typedef std::vector<std::vector<double>> NoiseValues;
+class NoiseMap : public std::enable_shared_from_this<NoiseMap> {
+public:
+	typedef std::shared_ptr<NoiseMap> Ptr;
 
-class WorldGen;
+	static Ptr create() { return Ptr(new NoiseMap()); }
+	static Ptr combination() { return Ptr(new NoiseMap(true)); }
 
-class NoiseMap {
+	Ptr setSeed(std::string seed) { this->seed = seed; return shared_from_this(); }
+	Ptr setGridSize(double value) { this->gridSizeX = value; this->gridSizeY = value; return shared_from_this(); }
+	Ptr setGridSize(double width, double height) { this->gridSizeX = width; this->gridSizeY = height; return shared_from_this(); }
+	Ptr setGridWidth(double value) { this->gridSizeX = value; return shared_from_this(); }
+	Ptr setGridHeight(double value) { this->gridSizeY = value; return shared_from_this(); }
+	Ptr setOctaves(int value) { this->octaves = value; return shared_from_this(); }
+	Ptr setFrequency(double value) { this->frequency = value; return shared_from_this(); }
+	Ptr setPersistence(double value) { this->persistence = value; return shared_from_this(); }
+	Ptr setLacunarity(double value) { this->lacunarity = value; return shared_from_this(); }
+
+	std::string getSeed() { return seed; }
+	double getGridWidth() { return gridSizeX; }
+	double getGridHeight() { return gridSizeY; }
+	int getOctaves() { return octaves; }
+	double getFrequency() { return frequency; }
+	double getPersistence() { return persistence; }
+	double getLacunarity() { return lacunarity; }
+	bool isGenerated() { return generated; }
+
+	Ptr add(Ptr noiseMap, int factor);
+
+	Ptr generate(int width, int height);
+
+	double getValue(int x, int y) { return noiseVals[y][x]; }
+	std::vector<std::vector<double>> getValues() { return noiseVals; }
+
 private:
-	friend class WorldGen;
-	NoiseMap(std::string seed, double x0, double x1, double y0, double y1,
-			int octaves, double frequency, double persistence, double lacunarity);
+	NoiseMap();
+	NoiseMap(bool combination);
 
-	NoiseMap(std::vector<std::pair<int, int>> cmbVect);
-	
 	std::string seed;
-	double x0, x1;
-	double y0, y1;
+	double gridSizeX, gridSizeY;
 	int octaves;
 	double frequency;
 	double persistence;
 	double lacunarity;
 
-	NoiseValues noiseVals;
-	void addRow();
-	void addValue(double value);
-
-	std::vector<double> noiseThresholds;
-
 	bool isCombination;
-	std::vector<std::pair<int, int>> combinations;
+	std::vector<std::pair<Ptr, int>> combinations;
+
+	void genNormal(int width, int height);
+	void genCombination(int width, int height);
+
+	bool generated;
+
+	std::vector<std::vector<double>> noiseVals;
 
 }; // class NoiseMap;
 

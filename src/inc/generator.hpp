@@ -14,23 +14,40 @@
 // limitations under the License.
 /////////////////////////////////////////////////////////////////////////////
 // Project: World Generation Library
-// File: src/inc/defines.hpp
+// File: src/inc/generator.hpp
 // Author: Samuel Sleight <samuel(dot)sleight(at)gmail(dot)com>
 /////////////////////////////////////////////////////////////////////////////
 
-#ifndef WG_DEFINES_HPP
-#define WG_DEFINES_HPP
+#ifndef WG_GENERATOR_HPP
+#define WG_GENERATOR_HPP
 
-#define WG_NS namespace wg {
-#define WG_NS_END }
+#include "defines.hpp"
 
-#define WG_DEF_SEED "0"
-#define WG_DEF_GRID 1
-#define WG_DEF_OCTAVES noise::module::DEFAULT_PERLIN_OCTAVE_COUNT
-#define WG_DEF_FREQ noise::module::DEFAULT_PERLIN_FREQUENCY
-#define WG_DEF_PERS noise::module::DEFAULT_PERLIN_PERSISTENCE
-#define WG_DEF_LACU noise::module::DEFAULT_PERLIN_LACUNARITY
+#include <string>
 
-#define WG_NO_TILE std::numeric_limits<int>::max()
+#include <noise/noise.h>
 
-#endif // WG_DEFINES_HPP
+WG_NS
+
+class NoiseMap;
+class World;
+
+class Generator {
+private:
+	friend class NoiseMap;
+	friend class World;
+
+	Generator(std::string seed, double gridX, double gridY,
+			int octaves, double freq, double pers, double lacu);
+
+	double operator()(int x, int y);
+
+	double gridX, gridY;
+
+	noise::module::Perlin perlinModule;
+
+}; // class Generator;
+
+WG_NS_END
+
+#endif // WG_GENERATOR_HPP
