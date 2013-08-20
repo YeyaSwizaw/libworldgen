@@ -9,6 +9,8 @@
 #include <cstdlib>
 
 #include "src/inc/noisemap.hpp"
+#include "src/inc/tiledef.hpp"
+#include "src/inc/world.hpp"
 
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
@@ -28,15 +30,13 @@ int main(int argc, char* argv[]) {
 		->setSeed(std::to_string(rand()))
 		->setGridSize(0.01);
 
-	// wg::World::Ptr w = wg::World::create();
+	wg::World::Ptr w = wg::World::create();
 
-	/*
 	wg::TileDef::Ptr tileWater = w->newTile()->addConstraint(heightmap < -0.3);
 	wg::TileDef::Ptr tileHighMnt = w->newTile()->addConstraint(heightmap > 0.55);
 	wg::TileDef::Ptr tileMnt = w->newTile()->addConstraint(heightmap > 0.2);
 	wg::TileDef::Ptr tileDesert = w->newTile()->addConstraint(rainfall < -0.3);
 	wg::TileDef::Ptr tilePlains = w->newTile();
-	*/
 
 	rainfall->generate(10, 10);
 	heightmap->generate(10, 10);
