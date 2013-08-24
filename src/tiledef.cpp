@@ -22,8 +22,24 @@
 
 WG_NS
 
-TileDef::TileDef() {
+unsigned int TileDef::nextId = 0;
+
+TileDef::TileDef()
+	: id(nextId++) {
 
 } // TileDef::TileDef();
+
+bool TileDef::isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y) {
+	for(auto& c : constraints) {
+		if(!(c.isValid(chunkWidth, chunkHeight, chunkX, chunkY, x, y))) {
+			return false;
+
+		} // if(!(c.isValid(chunkX, chunkY, x, y)));
+
+	} // for(auto& c : constraints);
+
+	return true;
+
+} // bool TileDef::isValid(int chunkX, int chunkY, int x, int y);
 
 WG_NS_END

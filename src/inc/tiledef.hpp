@@ -37,13 +37,19 @@ public:
 
 	Ptr addConstraint(Constraint c) { constraints.push_back(c); return shared_from_this(); }
 
+	unsigned int getId() { return id; }
+
 private:
 	friend class World;
 
 	TileDef();
 
+	static unsigned int nextId;
+	unsigned int id;
+
 	std::vector<Constraint> constraints;
 
+	bool isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y);
 
 }; // class TileDef;
 

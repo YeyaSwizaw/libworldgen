@@ -20,11 +20,38 @@
 
 #include "inc/constraint.hpp"
 
+#define WG_IMP_NOISEMAP
+#include "inc/noisemap.hpp"
+#undef WG_IMP_NOISEMAP
+
 WG_NS
 
 Constraint::Constraint(std::shared_ptr<NoiseMap> noiseMap, Type type, double value) 
 	: noiseMap(noiseMap), type(type), value(value) {
 
 } // Constraint::Constraint(NoiseMap::Ptr noiseMap, Type type, double value);
+
+bool Constraint::isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y) {
+	if(!(noiseMap->isGenerated(chunkWidth, chunkHeight, chunkX, chunkY))) {
+		noiseMap->generate(chunkWidth, chunkHeight, chunkX, chunkY);
+
+	} // if(!(noiseMap->isGenerated(chunkWidth, chunkHeight, chunkX, chunkY)));
+
+	bool retval = false;
+
+	switch(type) {
+		case GT:
+			retval = (noiseMap->noiseVals[y][x] > value);
+			break;
+
+		case LT:
+			retval = (noiseMap->noiseVals[y][x] < value);
+			break;
+
+	} // switch(type);
+
+	return retval;
+
+} // bool Constraint::isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y);
 
 WG_NS_END

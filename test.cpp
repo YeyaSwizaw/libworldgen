@@ -30,7 +30,8 @@ int main(int argc, char* argv[]) {
 		->setSeed(std::to_string(rand()))
 		->setGridSize(0.01);
 
-	wg::World::Ptr w = wg::World::create();
+	wg::World::Ptr w = wg::World::create()
+		->setChunkSize(40, 40);
 
 	wg::TileDef::Ptr tileWater = w->newTile()->addConstraint(heightmap < -0.3);
 	wg::TileDef::Ptr tileHighMnt = w->newTile()->addConstraint(heightmap > 0.55);
@@ -38,10 +39,11 @@ int main(int argc, char* argv[]) {
 	wg::TileDef::Ptr tileDesert = w->newTile()->addConstraint(rainfall < -0.3);
 	wg::TileDef::Ptr tilePlains = w->newTile();
 
-	rainfall->generate(10, 10);
-	heightmap->generate(10, 10);
+	w->generate(0, 0);
 
 	std::cout << hmap1->getSeed() << ";" << hmap2->getSeed() << ";" << rainfall->getSeed() << std::endl;
+
+	std::cout << tileWater->getId() << ", " << tileHighMnt->getId() << std::endl;
 
 	for(auto vals : rainfall->getValues()) {
 		for(double v : vals) {
@@ -65,28 +67,27 @@ int main(int argc, char* argv[]) {
 
 	} // for(auto vals : rainfall->getValues());
 
+	std::cout << std::endl;
 
-
-	/*;
-	for(auto r : w->getTileMap()) {
+	for(auto r : w->getMap()) {
 		for(auto t : r) {
-			if(t == tileWater) {
+			if(t == tileWater->getId()) {
 				std::cout << "[0;34m";
 
 			} // if(t == tileWater);
-			else if(t == tileMnt) {
+			else if(t == tileMnt->getId()) {
 				std::cout << "[0;37m";
 
 			} // else if(t == tileMnt);
-			else if(t == tileHighMnt) {
+			else if(t == tileHighMnt->getId()) {
 				std::cout << "[1;37m";
 
 			} // else if(t == tileHighMnt);
-			else if(t == tilePlains) {
+			else if(t == tilePlains->getId()) {
 				std::cout << "[0;32m";
 
 			} // else if(t == tilePlains);
-			else if(t == tileDesert) {
+			else if(t == tileDesert->getId()) {
 				std::cout << "[0;33m";
 
 			} // else if(t == tileDesert);
@@ -100,6 +101,5 @@ int main(int argc, char* argv[]) {
 	} // for(auto r : w->getTileMap());
 
 	std::cout << "[0m";
-	*/
 
 } // int main(int argc, char* argv[]);

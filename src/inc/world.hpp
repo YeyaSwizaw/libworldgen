@@ -35,9 +35,21 @@ public:
 	static Ptr create() { return Ptr(new World()); }
 
 	TileDef::Ptr newTile();
+	
+	Ptr setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return shared_from_this(); }
+	Ptr setChunkWidth(int value) { chunkWidth = value; return shared_from_this(); }
+	Ptr setChunkHeight(int value) { chunkHeight = value; return shared_from_this(); }
+
+	Ptr generate(int chunkX = 0, int chunkY = 0);
+
+	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
 
 private:
+	int chunkWidth, chunkHeight;
+
 	std::vector<TileDef::Ptr> tileDefinitions;
+
+	std::vector<std::vector<unsigned int>> mapGrid;
 
 }; // class World : public std::enable_shared_from_this<World>;
 

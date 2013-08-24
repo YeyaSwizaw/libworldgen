@@ -57,15 +57,18 @@ public:
 	double getPersistence() { return persistence; }
 	double getLacunarity() { return lacunarity; }
 	bool isGenerated() { return generated; }
+	bool isGenerated(int chunkWidth, int chunkHeight, int chunkX, int chunkY);
 
 	Ptr add(Ptr noiseMap, int factor);
 
-	Ptr generate(int width, int height);
+	Ptr generate(int width, int height, int chunkX = 0, int chunkY = 0);
 
 	double getValue(int x, int y) { return noiseVals[y][x]; }
 	std::vector<std::vector<double>> getValues() { return noiseVals; }
 
 private:
+	friend class Constraint;
+
 	NoiseMap();
 	NoiseMap(bool combination);
 
@@ -79,17 +82,20 @@ private:
 	bool isCombination;
 	std::vector<std::pair<Ptr, int>> combinations;
 
-	void genNormal(int width, int height);
-	void genCombination(int width, int height);
+	void genNormal();
+	void genCombination();
 
 	bool generated;
 
 	std::vector<std::vector<double>> noiseVals;
 
+	int chunkX, chunkY, chunkWidth, chunkHeight;
+
 }; // class NoiseMap;
 
 WG_NS_END
 
+#ifndef WG_IMP_NOISEMAP
 #include "constraint.hpp"
 
 wg::Constraint operator<(wg::NoiseMap::Ptr lhs, double rhs) {
@@ -101,5 +107,7 @@ wg::Constraint operator>(wg::NoiseMap::Ptr lhs, double rhs) {
 	return wg::Constraint(lhs, wg::Constraint::Type::GT, rhs);
 
 } // Constraint operator<(NoiseMap::Ptr lhs, double rhs);
+
+#endif // WG_IMP_NOISEMAP
 
 #endif // WG_NOISEMAP_HPP

@@ -28,6 +28,7 @@
 WG_NS
 
 class NoiseMap;
+class TileDef;
 
 class Constraint {
 public:
@@ -40,9 +41,13 @@ public:
 	Constraint(std::shared_ptr<NoiseMap> noiseMap, Type type, double value);
 
 private:
+	friend class TileDef;
+
 	std::shared_ptr<NoiseMap> noiseMap;
 	Type type;
 	double value;
+
+	bool isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y);
 
 }; // class Constraint;
 

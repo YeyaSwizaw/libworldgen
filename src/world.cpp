@@ -29,4 +29,31 @@ TileDef::Ptr World::newTile() {
 
 } // TileDef::Ptr World::newTile();
 
+World::Ptr World::generate(int chunkX, int chunkY) {
+	mapGrid.clear();
+	mapGrid.resize(chunkHeight);
+	for(auto& row : mapGrid) {
+		row.resize(chunkWidth, TileDef::nextId);
+
+	} // for(auto& row : mapGrid);
+
+	for(int x = 0; x < chunkWidth; ++x) {
+		for(int y = 0; y < chunkHeight; ++y) {
+			for(auto& tDef : tileDefinitions) {
+				if(tDef->isValid(chunkWidth, chunkHeight, chunkX, chunkY, x, y)) {
+					mapGrid[y][x] = tDef->id;
+					break;
+
+				} // if(tDef->isValid(chunkX, chunkY, x, y));
+
+			} // for(auto& tDef : tileDefinitions);
+
+		} // for(int y = 0; y < chunkHeight; ++y);
+
+	} // for(int x = 0; x < chunkWidth; ++x);
+
+	return shared_from_this();
+
+} // World::Ptr World::generate(int chunkX, int chunkY);
+
 WG_NS_END
