@@ -29,6 +29,16 @@ TileDef::TileDef()
 
 } // TileDef::TileDef();
 
+TileDef::~TileDef() {
+	for(auto& c : constraints) {
+		c.clear();
+
+	} // for(auto& c : constraints);
+
+	constraints.clear();
+
+} // TileDef::~TileDef();
+
 bool TileDef::isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y) {
 	for(auto& c : constraints) {
 		if(!(c.isValid(chunkWidth, chunkHeight, chunkX, chunkY, x, y))) {

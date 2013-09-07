@@ -13,8 +13,10 @@
 #include "src/inc/world.hpp"
 
 int main(int argc, char* argv[]) {
+	// Seed random number gen.
 	srand(time(NULL));
 
+	// Create noise maps, with random seed
 	wg::NoiseMap::Ptr hmap1 = wg::NoiseMap::create()
 		->setSeed(std::to_string(rand()))
 		->setGridSize(0.05);
@@ -30,45 +32,21 @@ int main(int argc, char* argv[]) {
 		->setSeed(std::to_string(rand()))
 		->setGridSize(0.01);
 
+	// Create world
 	wg::World::Ptr w = wg::World::create()
 		->setChunkSize(40, 40);
 
+	// Set tile definitions
 	wg::TileDef::Ptr tileWater = w->newTile()->addConstraint(heightmap < -0.3);
 	wg::TileDef::Ptr tileHighMnt = w->newTile()->addConstraint(heightmap > 0.55);
 	wg::TileDef::Ptr tileMnt = w->newTile()->addConstraint(heightmap > 0.2);
 	wg::TileDef::Ptr tileDesert = w->newTile()->addConstraint(rainfall < -0.3);
 	wg::TileDef::Ptr tilePlains = w->newTile();
 
+	// Generate the world (specifically the chunk of world at 0,0)
 	w->generate(0, 0);
 
-	std::cout << hmap1->getSeed() << ";" << hmap2->getSeed() << ";" << rainfall->getSeed() << std::endl;
-
-	std::cout << tileWater->getId() << ", " << tileHighMnt->getId() << std::endl;
-
-	for(auto vals : rainfall->getValues()) {
-		for(double v : vals) {
-			std::cout << v << ",";
-
-		} // for(double v : vals);
-
-		std::cout << std::endl;
-
-	} // for(auto vals : rainfall->getValues());
-
-	std::cout << std::endl;
-
-	for(auto vals : heightmap->getValues()) {
-		for(double v : vals) {
-			std::cout << v << ",";
-
-		} // for(double v : vals);
-
-		std::cout << std::endl;
-
-	} // for(auto vals : rainfall->getValues());
-
-	std::cout << std::endl;
-
+	// Output world (looks nice on linux, windows will spew codes or something)
 	for(auto r : w->getMap()) {
 		for(auto t : r) {
 			if(t == tileWater->getId()) {

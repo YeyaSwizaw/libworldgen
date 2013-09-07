@@ -8,10 +8,10 @@ project "worldgen"
 	links { "noise" }
 	objdir "build/obj"
 	buildoptions { "-std=c++11" }
+	defines { "WG_BUILD_OPS" }
 
 	configuration "debug"
 		flags { "Symbols", "ExtraWarnings" }
 
 	configuration "release"
 		flags { "Optimize" }
-

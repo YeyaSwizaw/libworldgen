@@ -35,6 +35,8 @@ class TileDef : public std::enable_shared_from_this<TileDef> {
 public:
 	typedef std::shared_ptr<TileDef> Ptr;
 
+	~TileDef();
+
 	Ptr addConstraint(Constraint c) { constraints.push_back(c); return shared_from_this(); }
 
 	unsigned int getId() { return id; }

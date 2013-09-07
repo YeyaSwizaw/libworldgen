@@ -33,6 +33,7 @@ public:
 	typedef std::shared_ptr<World> Ptr;
 
 	static Ptr create() { return Ptr(new World()); }
+	~World();
 
 	TileDef::Ptr newTile();
 	
@@ -43,6 +44,7 @@ public:
 	Ptr generate(int chunkX = 0, int chunkY = 0);
 
 	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
+	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
 
 private:
 	int chunkWidth, chunkHeight;

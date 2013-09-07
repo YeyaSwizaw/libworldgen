@@ -39,6 +39,8 @@ public:
 	static Ptr create() { return Ptr(new NoiseMap()); }
 	static Ptr combination() { return Ptr(new NoiseMap(true)); }
 
+	~NoiseMap();
+
 	Ptr setSeed(std::string seed) { this->seed = seed; return shared_from_this(); }
 	Ptr setGridSize(double value) { this->gridSizeX = value; this->gridSizeY = value; return shared_from_this(); }
 	Ptr setGridSize(double width, double height) { this->gridSizeX = width; this->gridSizeY = height; return shared_from_this(); }
@@ -95,8 +97,13 @@ private:
 
 WG_NS_END
 
-#ifndef WG_IMP_NOISEMAP
 #include "constraint.hpp"
+
+wg::Constraint operator<(wg::NoiseMap::Ptr lhs, double rhs);
+wg::Constraint operator>(wg::NoiseMap::Ptr lhs, double rhs);
+
+#ifdef WG_BUILD_OPS
+#ifndef WG_IMP_NOISEMAP
 
 wg::Constraint operator<(wg::NoiseMap::Ptr lhs, double rhs) {
 	return wg::Constraint(lhs, wg::Constraint::Type::LT, rhs);
@@ -109,5 +116,6 @@ wg::Constraint operator>(wg::NoiseMap::Ptr lhs, double rhs) {
 } // Constraint operator<(NoiseMap::Ptr lhs, double rhs);
 
 #endif // WG_IMP_NOISEMAP
+#endif // WG_BUILD_OPS
 
 #endif // WG_NOISEMAP_HPP

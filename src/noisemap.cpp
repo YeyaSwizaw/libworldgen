@@ -39,6 +39,20 @@ NoiseMap::NoiseMap(bool combination)
 
 } // NoiseMap::NoiseMap(bool combination);
 
+NoiseMap::~NoiseMap() {
+	if(isCombination) {
+		for(auto& p : combinations) {
+			p.first.reset();
+
+		} // for(auto& p : combinations);
+
+	} // if(isCombinations);
+
+	combinations.clear();
+	noiseVals.clear();
+
+} // NoiseMap::~NoiseMap();
+
 NoiseMap::Ptr NoiseMap::add(Ptr noiseMap, int factor) {
 	combinations.push_back(std::make_pair(noiseMap, factor));
 

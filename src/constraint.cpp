@@ -54,4 +54,9 @@ bool Constraint::isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY
 
 } // bool Constraint::isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y);
 
+void Constraint::clear() {
+	noiseMap.reset();
+
+} // void Constraint::clear();
+
 WG_NS_END

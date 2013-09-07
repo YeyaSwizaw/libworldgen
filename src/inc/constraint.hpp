@@ -49,6 +49,8 @@ private:
 
 	bool isValid(int chunkWidth, int chunkHeight, int chunkX, int chunkY, int x, int y);
 
+	void clear();
+
 }; // class Constraint;
 
 WG_NS_END

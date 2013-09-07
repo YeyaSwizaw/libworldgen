@@ -22,6 +22,16 @@
 
 WG_NS
 
+World::~World() {
+	for(auto& tDef : tileDefinitions) {
+		tDef.reset();
+
+	} // for(auto& tDef : tileDefinitions);
+
+	tileDefinitions.clear();
+
+} // World::~World();
+
 TileDef::Ptr World::newTile() {
 	tileDefinitions.push_back(TileDef::Ptr(new TileDef()));
 
@@ -37,8 +47,8 @@ World::Ptr World::generate(int chunkX, int chunkY) {
 
 	} // for(auto& row : mapGrid);
 
-	for(int x = 0; x < chunkWidth; ++x) {
-		for(int y = 0; y < chunkHeight; ++y) {
+	for(int y = 0; y < chunkHeight; ++y) {
+		for(int x = 0; x < chunkWidth; ++x) {
 			for(auto& tDef : tileDefinitions) {
 				if(tDef->isValid(chunkWidth, chunkHeight, chunkX, chunkY, x, y)) {
 					mapGrid[y][x] = tDef->id;
