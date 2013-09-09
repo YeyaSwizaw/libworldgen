@@ -34,6 +34,7 @@ WG_NS
 class NoiseMap;
 class RandomNoiseMap;
 class CombinationNoiseMap;
+class TileDef;
 
 class World {
 public:
@@ -47,6 +48,8 @@ public:
 	RandomNoiseMap* addRandomNoiseMap();
 	CombinationNoiseMap* addCombinationNoiseMap();
 
+	TileDef* addTileDefinition();
+
 	World* generate(int xChunk, int yChunk);
 
 	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
@@ -56,12 +59,15 @@ private:
 	int chunkWidth, chunkHeight;
 
 	noise::module::Perlin perlinModule;
+
 	std::vector<NoiseMap*> noiseMaps;
+	std::vector<TileDef*> tileDefinitions;
 
 	std::vector<std::vector<unsigned int>> mapGrid;
 
 	void generateRandom(RandomNoiseMap* nMap);
 	void generateCombination(CombinationNoiseMap* nMap);
+	void setTiles();
 
 }; // class World;
 

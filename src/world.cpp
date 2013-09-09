@@ -20,6 +20,7 @@
 
 #include "inc/world.hpp"
 #include "inc/noisemap.hpp"
+#include "inc/tiledef.hpp"
 
 WG_NS
 
@@ -42,6 +43,13 @@ CombinationNoiseMap* World::addCombinationNoiseMap() {
 
 } // CombinationNoiseMap* World::addCombinationNoiseMap();
 
+TileDef* World::addTileDefinition() {
+	tileDefinitions.push_back(new TileDef);
+
+	return tileDefinitions.back();
+
+} // TileDef* World::addTileDefinition();
+
 World* World::generate(int xChunk, int yChunk) {
 	// First generate all noisemaps
 	for(NoiseMap* nMap : noiseMaps) {
@@ -58,6 +66,8 @@ World* World::generate(int xChunk, int yChunk) {
 		} // if(!nMap->generated);
 
 	} // for(NoiseMap* nMap : noiseMaps);
+
+	setTiles();
 
 	return this;
 
@@ -129,5 +139,26 @@ void World::generateCombination(CombinationNoiseMap* nMap) {
 	nMap->generated = true;
 
 } // void World::generateCombination(CombinationNoiseMap* nMap);
+
+void World::setTiles() {
+	mapGrid.resize(chunkHeight);
+	for(int y = 0; y < chunkHeight; ++y) {
+		mapGrid[y].resize(chunkWidth, TileDef::nextId);
+
+		for(int x = 0; x < chunkWidth; ++x) {
+			for(TileDef* tDef : tileDefinitions) {
+				if(tDef->isValid(x, y)) {
+					mapGrid[y][x] = tDef->id;
+					break;
+
+				} // if(tDef->isValid(x, y));
+
+			} // for(TileDef* tDef : tileDefinitions);
+
+		} // for(int x = 0; x < chunkWidth; ++x);
+
+	} // for(int y = 0; y < chunkHeight; ++y);
+
+} // void World::setTiles();
 
 WG_NS_END

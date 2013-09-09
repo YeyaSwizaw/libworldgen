@@ -32,6 +32,7 @@
 WG_NS
 
 class World;
+class TileDef;
 
 class NoiseMap {
 protected:
@@ -46,6 +47,7 @@ public:
 
 private:
 	friend class World;
+	friend class TileDef;
 
 	bool combination, generated;
 	std::vector<std::vector<double>> noiseVals;

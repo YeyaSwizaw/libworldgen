@@ -8,8 +8,9 @@
 #include <string>
 #include <cstdlib>
 
-#include "src/inc/noisemap.hpp"
 #include "src/inc/world.hpp"
+#include "src/inc/noisemap.hpp"
+#include "src/inc/tiledef.hpp"
 
 int main(int argc, char* argv[]) {
 	srand(time(NULL));
@@ -28,10 +29,19 @@ int main(int argc, char* argv[]) {
 		->add(nMap1, 10)
 		->add(nMap2, 20);
 
-	w->generate(0, 0);
+	wg::TileDef* t1 = w->addTileDefinition()
+		->addConstraint({nMap3, wg::ConstraintType::LT, 0});
 
-	std::cout << nMap1->getValue(10, 10) << std::endl
-		<< nMap2->getValue(10, 10) << std::endl
-		<< nMap3->getValue(10, 10) << std::endl;
+	for(auto row : w->generate(0, 0)->getMap()) {
+		for(unsigned int t : row) {
+			std::cout << t;
+
+		} // for(unsigned int t : row);
+
+		std::cout << std::endl;
+
+	} // for(auto row : w->generate(0, 0)->getMap());
+
+	std::cout << std::endl;
 
 } // int main(int argc, char* argv[]);
