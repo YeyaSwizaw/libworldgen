@@ -21,58 +21,16 @@
 #ifndef WG_WORLD_HPP
 #define WG_WORLD_HPP
 
-#include <algorithm>
-#include <functional>
-#include <vector>
-
-#include <noise/module/perlin.h>
-
 #include "defines.hpp"
+#include "worldbase.hpp"
 
 WG_NS
-
-class NoiseMap;
-class RandomNoiseMap;
-class CombinationNoiseMap;
-class TileDef;
-
-template<typename _t>
-class WorldBase {
-public:
-	_t* setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return static_cast<_t*>(this); }
-	_t* setChunkSize(int value) { chunkWidth = value; chunkHeight = value; return static_cast<_t*>(this); }
-	_t* setChunkWidth(int value) { chunkWidth = value; return static_cast<_t*>(this); }
-	_t* setChunkHeight(int value) { chunkHeight = value; return static_cast<_t*>(this); }
-
-	RandomNoiseMap* addRandomNoiseMap();
-	CombinationNoiseMap* addCombinationNoiseMap();
-
-	virtual TileDef* addTileDefinition();
-
-	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
-	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
-
-protected:
-	WorldBase();
-
-	int chunkWidth, chunkHeight;
-
-	noise::module::Perlin perlinModule;
-
-	std::vector<NoiseMap*> noiseMaps;
-	std::vector<TileDef*> tileDefinitions;
-
-	std::vector<std::vector<unsigned int>> mapGrid;
-
-	void generateRandom(RandomNoiseMap* nMap);
-	void generateCombination(CombinationNoiseMap* nMap);
-	void setTiles();
-
-}; // class WorldBase;
 
 class World : public WorldBase<World> {
 public:
 	World();
+
+	TileDef* addTileDefinition();
 
 	World* generate(int xChunk, int yChunk);
 

@@ -34,6 +34,9 @@ class World;
 template<typename _t>
 class WorldBase;
 
+template<typename _tp>
+class EnhancedWorld;
+
 enum ConstraintType {
 	GT, LT
 
@@ -54,7 +57,12 @@ public:
 
 private:
 	friend class World;
-	friend class WorldBase<World>;
+	
+	template<typename _t>
+	friend class WorldBase;
+
+	template<typename _tp>
+	friend class EnhancedWorld;
 
 	TileDef();
 

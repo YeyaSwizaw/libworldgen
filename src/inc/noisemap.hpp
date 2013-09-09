@@ -37,6 +37,9 @@ class TileDef;
 template<typename _t>
 class WorldBase;
 
+template<typename _tp>
+class EnhancedWorld;
+
 class NoiseMap {
 protected:
 	NoiseMap(bool combination);
@@ -51,7 +54,12 @@ public:
 private:
 	friend class TileDef;
 	friend class World;
-	friend class WorldBase<World>;
+
+	template<typename _t>
+	friend class WorldBase;
+
+	template<typename _tp>
+	friend class EnhancedWorld;
 
 	bool combination, generated;
 	std::vector<std::vector<double>> noiseVals;
@@ -79,8 +87,11 @@ public:
 	double getLacunarity() { return lacunarity; }
 
 private:
-	friend class World;
-	friend class WorldBase<World>;
+	template<typename _t>
+	friend class WorldBase;
+
+	template<typename _tp>
+	friend class EnhancedWorld;
 
 	RandomNoiseMap();
 
@@ -98,8 +109,11 @@ public:
 	CombinationNoiseMap* add(NoiseMap* mapToAdd, int factor);
 
 private:
-	friend class World;
-	friend class WorldBase<World>;
+	template<typename _t>
+	friend class WorldBase;
+
+	template<typename _tp>
+	friend class EnhancedWorld;
 
 	CombinationNoiseMap();
 

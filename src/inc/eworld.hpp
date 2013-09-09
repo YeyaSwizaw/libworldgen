@@ -14,48 +14,48 @@
 // limitations under the License.
 /////////////////////////////////////////////////////////////////////////////
 // Project: World Generation Library
-// File: src/world.cpp
+// File: src/inc/eworld.hpp
 // Author: Samuel Sleight <samuel(dot)sleight(at)gmail(dot)com>
 /////////////////////////////////////////////////////////////////////////////
 
-#include "inc/world.hpp"
-#include "inc/noisemap.hpp"
+#ifndef WG_EWORLD_HPP
+#define WG_EWORLD_HPP
+
+#include <map>
+#include <vector>
+
+#include "defines.hpp"
+#include "worldbase.hpp"
+#include "noisemap.hpp"
+#include "tiledef.hpp"
 
 WG_NS
 
-World::World()
-	: WorldBase<World>() {
+template<typename _tp>
+class EnhancedWorld;
 
-} // World::World();
+template<typename _tp>
+class EnhancedWorld : public WorldBase<EnhancedWorld<_tp>> {
+public:
+	EnhancedWorld();
 
-TileDef* World::addTileDefinition() {
-	tileDefinitions.push_back(new TileDef);
+	TileDef* addTileDefinition(_tp object);
 
-	return tileDefinitions.back();
+	EnhancedWorld<_tp>* generate(int xChunk, int yChunk);
 
-} // TileDef* World::addTileDefinition();
+	_tp getObject(int x, int y) { return mappedObjects[y][x]; }
+	std::vector<std::vector<_tp>> getObjects() { return mappedObjMap; }
 
-World* World::generate(int xChunk, int yChunk) {
-	// First generate all noisemaps
-	for(NoiseMap* nMap : noiseMaps) {
-		if(!nMap->generated) {
-			if(nMap->combination) {
-				generateCombination(static_cast<CombinationNoiseMap*>(nMap));
+private:
+	std::map<unsigned int, _tp> mappedObjects;
+	std::vector<std::vector<_tp>> mappedObjMap;
 
-			} // if(nMap->combination);
-			else {
-				generateRandom(static_cast<RandomNoiseMap*>(nMap));
+	void mapObjects();
 
-			} // else;
+}; // class EnhancedWorld<_tp> : public WorldBase<EnhancedWorld<_tp>>;
 
-		} // if(!nMap->generated);
-
-	} // for(NoiseMap* nMap : noiseMaps);
-
-	setTiles();
-
-	return this;
-
-} // World* World::generate(int xChunk, int yChunk);
+#include "eworld.tpp"
 
 WG_NS_END
+
+#endif // WG_EWORLD_HPP
