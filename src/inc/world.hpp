@@ -21,7 +21,11 @@
 #ifndef WG_WORLD_HPP
 #define WG_WORLD_HPP
 
+#include <algorithm>
+#include <functional>
 #include <vector>
+
+#include <noise/module/perlin.h>
 
 #include "defines.hpp"
 
@@ -43,15 +47,21 @@ public:
 	RandomNoiseMap* addRandomNoiseMap();
 	CombinationNoiseMap* addCombinationNoiseMap();
 
+	World* generate(int xChunk, int yChunk);
+
 	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
 	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
 
 private:
 	int chunkWidth, chunkHeight;
 
+	noise::module::Perlin perlinModule;
 	std::vector<NoiseMap*> noiseMaps;
 
 	std::vector<std::vector<unsigned int>> mapGrid;
+
+	void generateRandom(RandomNoiseMap* nMap);
+	void generateCombination(CombinationNoiseMap* nMap);
 
 }; // class World;
 

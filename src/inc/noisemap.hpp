@@ -45,6 +45,8 @@ public:
 	std::vector<std::vector<double>> getValues() { return noiseVals; }
 
 private:
+	friend class World;
+
 	bool combination, generated;
 	std::vector<std::vector<double>> noiseVals;
 

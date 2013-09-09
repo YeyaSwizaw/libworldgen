@@ -17,9 +17,21 @@ int main(int argc, char* argv[]) {
 	wg::World* w = (new wg::World())->setChunkSize(30);
 
 	wg::RandomNoiseMap* nMap1 = w->addRandomNoiseMap()
-		->setSeed(std::to_string(rand()));
+		->setSeed(std::to_string(rand()))
+		->setGridSize(0.05);
 
-	wg::CombinationNoiseMap* nMap2 = w->addCombinationNoiseMap()
-		->add(nMap1, 10);
+	wg::RandomNoiseMap* nMap2 = w->addRandomNoiseMap()
+		->setSeed(std::to_string(rand()))
+		->setGridSize(0.02);
+
+	wg::CombinationNoiseMap* nMap3 = w->addCombinationNoiseMap()
+		->add(nMap1, 10)
+		->add(nMap2, 20);
+
+	w->generate(0, 0);
+
+	std::cout << nMap1->getValue(10, 10) << std::endl
+		<< nMap2->getValue(10, 10) << std::endl
+		<< nMap3->getValue(10, 10) << std::endl;
 
 } // int main(int argc, char* argv[]);
