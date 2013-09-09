@@ -36,26 +36,25 @@ class RandomNoiseMap;
 class CombinationNoiseMap;
 class TileDef;
 
-class World {
+template<typename _t>
+class WorldBase {
 public:
-	World();
-
-	World* setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return this; }
-	World* setChunkSize(int value) { chunkWidth = value; chunkHeight = value; return this; }
-	World* setChunkWidth(int value) { chunkWidth = value; return this; }
-	World* setChunkHeight(int value) { chunkHeight = value; return this; }
+	_t* setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return static_cast<_t*>(this); }
+	_t* setChunkSize(int value) { chunkWidth = value; chunkHeight = value; return static_cast<_t*>(this); }
+	_t* setChunkWidth(int value) { chunkWidth = value; return static_cast<_t*>(this); }
+	_t* setChunkHeight(int value) { chunkHeight = value; return static_cast<_t*>(this); }
 
 	RandomNoiseMap* addRandomNoiseMap();
 	CombinationNoiseMap* addCombinationNoiseMap();
 
-	TileDef* addTileDefinition();
-
-	World* generate(int xChunk, int yChunk);
+	virtual TileDef* addTileDefinition();
 
 	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
 	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
 
-private:
+protected:
+	WorldBase();
+
 	int chunkWidth, chunkHeight;
 
 	noise::module::Perlin perlinModule;
@@ -69,7 +68,15 @@ private:
 	void generateCombination(CombinationNoiseMap* nMap);
 	void setTiles();
 
-}; // class World;
+}; // class WorldBase;
+
+class World : public WorldBase<World> {
+public:
+	World();
+
+	World* generate(int xChunk, int yChunk);
+
+}; // class World : public WorldBase<World>;
 
 WG_NS_END
 

@@ -19,61 +19,43 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "inc/world.hpp"
-#include "inc/noisemap.hpp"
 #include "inc/tiledef.hpp"
+#include "inc/noisemap.hpp"
 
 WG_NS
 
-World::World() 
+template<typename _t>
+WorldBase<_t>::WorldBase()
 	: chunkWidth(WG_DEF_CHUNK), chunkHeight(WG_DEF_CHUNK) {
 
-} // World::World();
+} // WorldBase<_t>::WorldBase();
 
-RandomNoiseMap* World::addRandomNoiseMap() {
+template<typename _t>
+RandomNoiseMap* WorldBase<_t>::addRandomNoiseMap() {
 	noiseMaps.push_back(new RandomNoiseMap);
 
 	return static_cast<RandomNoiseMap*>(noiseMaps.back());
 
-} // RandomNoiseMap* World::addRandomNoiseMap();
+} // RandomNoiseMap* WorldBase<_t>::addRandomNoiseMap();
 
-CombinationNoiseMap* World::addCombinationNoiseMap() {
+template<typename _t>
+CombinationNoiseMap* WorldBase<_t>::addCombinationNoiseMap() {
 	noiseMaps.push_back(new CombinationNoiseMap);
 
 	return static_cast<CombinationNoiseMap*>(noiseMaps.back());
 
-} // CombinationNoiseMap* World::addCombinationNoiseMap();
+} // CombinationNoiseMap* WorldBase<_t>::addCombinationNoiseMap();
 
-TileDef* World::addTileDefinition() {
+template<typename _t>
+TileDef* WorldBase<_t>::addTileDefinition() {
 	tileDefinitions.push_back(new TileDef);
 
 	return tileDefinitions.back();
 
-} // TileDef* World::addTileDefinition();
+} // TileDef* WorldBase<_t>::addTileDefinition();
 
-World* World::generate(int xChunk, int yChunk) {
-	// First generate all noisemaps
-	for(NoiseMap* nMap : noiseMaps) {
-		if(!nMap->generated) {
-			if(nMap->combination) {
-				generateCombination(static_cast<CombinationNoiseMap*>(nMap));
-
-			} // if(nMap->combination);
-			else {
-				generateRandom(static_cast<RandomNoiseMap*>(nMap));
-
-			} // else;
-
-		} // if(!nMap->generated);
-
-	} // for(NoiseMap* nMap : noiseMaps);
-
-	setTiles();
-
-	return this;
-
-} // World* World::generate(int xChunk, int yChunk);
-
-void World::generateRandom(RandomNoiseMap* nMap) {
+template<typename _t>
+void WorldBase<_t>::generateRandom(RandomNoiseMap* nMap) {
 	perlinModule.SetSeed(std::hash<std::string>()(nMap->seed));
 	perlinModule.SetOctaveCount(nMap->octaves);
 	perlinModule.SetFrequency(nMap->frequency);
@@ -92,9 +74,10 @@ void World::generateRandom(RandomNoiseMap* nMap) {
 
 	nMap->generated = true;
 
-} // void World::generateRandom(RandomNoiseMap* nMap);
+} // void WorldBase<_t>::generateRandom(RandomNoiseMap* nMap);
 
-void World::generateCombination(CombinationNoiseMap* nMap) {
+template<typename _t>
+void WorldBase<_t>::generateCombination(CombinationNoiseMap* nMap) {
 	int factor = 0;
 
 	nMap->noiseVals.resize(chunkHeight);
@@ -138,9 +121,10 @@ void World::generateCombination(CombinationNoiseMap* nMap) {
 
 	nMap->generated = true;
 
-} // void World::generateCombination(CombinationNoiseMap* nMap);
+} // void WorldBase<_t>::generateCombination(CombinationNoiseMap* nMap);
 
-void World::setTiles() {
+template<typename _t>
+void WorldBase<_t>::setTiles() {
 	mapGrid.resize(chunkHeight);
 	for(int y = 0; y < chunkHeight; ++y) {
 		mapGrid[y].resize(chunkWidth, TileDef::nextId);
@@ -159,6 +143,36 @@ void World::setTiles() {
 
 	} // for(int y = 0; y < chunkHeight; ++y);
 
-} // void World::setTiles();
+} // void WorldBase<_t>::setTiles();
+
+World::World()
+	: WorldBase<World>() {
+
+} // World::World();
+
+World* World::generate(int xChunk, int yChunk) {
+	// First generate all noisemaps
+	for(NoiseMap* nMap : noiseMaps) {
+		if(!nMap->generated) {
+			if(nMap->combination) {
+				generateCombination(static_cast<CombinationNoiseMap*>(nMap));
+
+			} // if(nMap->combination);
+			else {
+				generateRandom(static_cast<RandomNoiseMap*>(nMap));
+
+			} // else;
+
+		} // if(!nMap->generated);
+
+	} // for(NoiseMap* nMap : noiseMaps);
+
+	setTiles();
+
+	return this;
+
+} // World* World::generate(int xChunk, int yChunk);
+
+template class WorldBase<World>;
 
 WG_NS_END

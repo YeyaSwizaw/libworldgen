@@ -34,6 +34,9 @@ WG_NS
 class World;
 class TileDef;
 
+template<typename _t>
+class WorldBase;
+
 class NoiseMap {
 protected:
 	NoiseMap(bool combination);
@@ -46,8 +49,9 @@ public:
 	std::vector<std::vector<double>> getValues() { return noiseVals; }
 
 private:
-	friend class World;
 	friend class TileDef;
+	friend class World;
+	friend class WorldBase<World>;
 
 	bool combination, generated;
 	std::vector<std::vector<double>> noiseVals;
@@ -76,6 +80,7 @@ public:
 
 private:
 	friend class World;
+	friend class WorldBase<World>;
 
 	RandomNoiseMap();
 
@@ -94,6 +99,7 @@ public:
 
 private:
 	friend class World;
+	friend class WorldBase<World>;
 
 	CombinationNoiseMap();
 

@@ -31,6 +31,9 @@ WG_NS
 class NoiseMap;
 class World;
 
+template<typename _t>
+class WorldBase;
+
 enum ConstraintType {
 	GT, LT
 
@@ -51,6 +54,7 @@ public:
 
 private:
 	friend class World;
+	friend class WorldBase<World>;
 
 	TileDef();
 
