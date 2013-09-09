@@ -22,130 +22,33 @@
 
 WG_NS
 
-NoiseMap::NoiseMap()
-	: seed(WG_DEF_SEED),
+NoiseMap::NoiseMap(bool combination) 
+	: combination(combination), generated(false) {
+
+} // NoiseMap::NoiseMap(bool combination);
+
+RandomNoiseMap::RandomNoiseMap()
+	: NoiseMap(false),
+
+	  seed(WG_DEF_SEED),
 	  gridSizeX(WG_DEF_GRID), gridSizeY(WG_DEF_GRID),
 	  octaves(WG_DEF_OCTAVES),
 	  frequency(WG_DEF_FREQ),
 	  persistence(WG_DEF_PERS),
-	  lacunarity(WG_DEF_LACU),
+	  lacunarity(WG_DEF_LACU) {
 
-	  isCombination(false) {
+} // RandomNoiseMap::RandomNoiseMap();
 
-} // NoiseMap::NoiseMap();
+CombinationNoiseMap::CombinationNoiseMap()
+	: NoiseMap(true) {
 
-NoiseMap::NoiseMap(bool combination)
-	: isCombination(true) {
+} // CombinationNoiseMap::CombinationNoiseMap();
 
-} // NoiseMap::NoiseMap(bool combination);
+CombinationNoiseMap* CombinationNoiseMap::add(NoiseMap* mapToAdd, int factor) {
+	combinations.push_back({mapToAdd, factor});
 
-NoiseMap::~NoiseMap() {
-	if(isCombination) {
-		for(auto& p : combinations) {
-			p.first.reset();
+	return this;
 
-		} // for(auto& p : combinations);
-
-	} // if(isCombinations);
-
-	combinations.clear();
-	noiseVals.clear();
-
-} // NoiseMap::~NoiseMap();
-
-NoiseMap::Ptr NoiseMap::add(Ptr noiseMap, int factor) {
-	combinations.push_back(std::make_pair(noiseMap, factor));
-
-	return shared_from_this();
-
-} // Ptr NoiseMap::add(Ptr noiseMap, int factor);
-
-NoiseMap::Ptr NoiseMap::generate(int width, int height, int chunkX, int chunkY) {
-	this->chunkX = chunkX;
-	this->chunkY = chunkY;
-	chunkWidth = width;
-	chunkHeight = height;
-
-	if(isCombination) {
-		genCombination();
-
-	} // if(isCombination);
-	else {
-		genNormal();
-
-	} // else;
-
-	generated = true;
-
-	return shared_from_this();
-
-} // NoiseMap::Ptr NoiseMap::generate(int width, int height);
-
-void NoiseMap::genNormal() {
-	Generator gen(seed, gridSizeX, gridSizeY, octaves,
-			frequency, persistence, lacunarity);
-
-	int yBase = chunkY * chunkHeight;
-	int xBase = chunkX * chunkWidth;
-
-	for(int y = yBase; y < (yBase + chunkHeight); ++y) {
-		noiseVals.push_back(std::vector<double>());
-
-		for(int x = xBase; x < (xBase + chunkWidth); ++x) {
-			noiseVals.back().push_back(gen(x, y));
-
-		} // for(int x = 0; x < width; ++x);
-
-	} // for(int y = 0; y < width; ++y);
-
-} // void NoiseMap::genNormal();
-
-void NoiseMap::genCombination() {
-	noiseVals.resize(chunkHeight);
-	for(auto& row : noiseVals) {
-		row.resize(chunkWidth, 0.0);
-
-	} // for(auto& row : noiseVals);
-
-	int totalFactor = 0;
-
-	for(auto& comb : combinations) {
-		totalFactor += abs(comb.second);
-
-		if(!(comb.first->isGenerated(chunkWidth, chunkHeight, chunkX, chunkY))) {
-			comb.first->generate(chunkWidth, chunkHeight, chunkX, chunkY);
-
-		} // if(!(comb.first->isGenerated(chunkWidth, chunkHeight, chunkX, chunkY)));
-
-		int xBase = chunkX * chunkWidth;
-		int yBase = chunkY * chunkHeight;
-
-		for(int x = xBase; x < (xBase + chunkWidth); ++x) {
-			for(int y = yBase; y < (yBase + chunkHeight); ++y) {
-				noiseVals[y][x] += (comb.first->noiseVals[y][x] * comb.second);
-
-			} // for(int y = 0; y < height; ++y);
-
-		} // for(int x = 0; x < width; ++x);
-
-	} // for(auto& comb : combinations);
-
-	for(auto& row : noiseVals) {
-		for(auto& val : row) {
-			val /= totalFactor;
-
-		} // for(auto& val : row);
-
-	} // for(auto& row : noiseVals);
-
-} // void NoiseMap::genCombination(int width, int height);
-
-bool NoiseMap::isGenerated(int chunkWidth, int chunkHeight, int chunkX, int chunkY) {
-	return generated && (chunkWidth == this->chunkWidth)
-		             && (chunkHeight == this->chunkHeight)
-					 && (chunkX == this->chunkX)
-					 && (chunkY == this->chunkY);
-
-} // bool NoiseMap::isGenerated(int chunkWidth, int chunkHeight, int chunkX, int chunkY);
+} // CombinationNoiseMap* CombinationNoiseMap::add(NoiseMap* mapToAdd, int factor);
 
 WG_NS_END

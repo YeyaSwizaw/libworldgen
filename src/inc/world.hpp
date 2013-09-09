@@ -24,24 +24,24 @@
 #include <vector>
 
 #include "defines.hpp"
-#include "tiledef.hpp"
 
 WG_NS
 
-class World : public std::enable_shared_from_this<World> {
+class NoiseMap;
+class RandomNoiseMap;
+class CombinationNoiseMap;
+
+class World {
 public:
-	typedef std::shared_ptr<World> Ptr;
+	World();
 
-	static Ptr create() { return Ptr(new World()); }
-	~World();
+	World* setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return this; }
+	World* setChunkSize(int value) { chunkWidth = value; chunkHeight = value; return this; }
+	World* setChunkWidth(int value) { chunkWidth = value; return this; }
+	World* setChunkHeight(int value) { chunkHeight = value; return this; }
 
-	TileDef::Ptr newTile();
-	
-	Ptr setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return shared_from_this(); }
-	Ptr setChunkWidth(int value) { chunkWidth = value; return shared_from_this(); }
-	Ptr setChunkHeight(int value) { chunkHeight = value; return shared_from_this(); }
-
-	Ptr generate(int chunkX = 0, int chunkY = 0);
+	RandomNoiseMap* addRandomNoiseMap();
+	CombinationNoiseMap* addCombinationNoiseMap();
 
 	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
 	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
@@ -49,11 +49,11 @@ public:
 private:
 	int chunkWidth, chunkHeight;
 
-	std::vector<TileDef::Ptr> tileDefinitions;
+	std::vector<NoiseMap*> noiseMaps;
 
 	std::vector<std::vector<unsigned int>> mapGrid;
 
-}; // class World : public std::enable_shared_from_this<World>;
+}; // class World;
 
 WG_NS_END
 

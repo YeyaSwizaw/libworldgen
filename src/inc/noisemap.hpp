@@ -21,35 +21,46 @@
 #ifndef WG_NOISEMAP_HPP
 #define WG_NOISEMAP_HPP
 
-#include <memory>
-#include <vector>
 #include <string>
+#include <vector>
+#include <utility>
+
+#include <noise/module/perlin.h>
 
 #include "defines.hpp"
-#include "generator.hpp"
-
-#include <noise/noise.h>
 
 WG_NS
 
-class NoiseMap : public std::enable_shared_from_this<NoiseMap> {
+class World;
+
+class NoiseMap {
+protected:
+	NoiseMap(bool combination);
+
 public:
-	typedef std::shared_ptr<NoiseMap> Ptr;
+	bool isCombination() { return combination; }
+	bool isGenerated() { return generated; }
 
-	static Ptr create() { return Ptr(new NoiseMap()); }
-	static Ptr combination() { return Ptr(new NoiseMap(true)); }
+	double getValue(int x, int y) { return noiseVals[y][x]; }
+	std::vector<std::vector<double>> getValues() { return noiseVals; }
 
-	~NoiseMap();
+private:
+	bool combination, generated;
+	std::vector<std::vector<double>> noiseVals;
 
-	Ptr setSeed(std::string seed) { this->seed = seed; return shared_from_this(); }
-	Ptr setGridSize(double value) { this->gridSizeX = value; this->gridSizeY = value; return shared_from_this(); }
-	Ptr setGridSize(double width, double height) { this->gridSizeX = width; this->gridSizeY = height; return shared_from_this(); }
-	Ptr setGridWidth(double value) { this->gridSizeX = value; return shared_from_this(); }
-	Ptr setGridHeight(double value) { this->gridSizeY = value; return shared_from_this(); }
-	Ptr setOctaves(int value) { this->octaves = value; return shared_from_this(); }
-	Ptr setFrequency(double value) { this->frequency = value; return shared_from_this(); }
-	Ptr setPersistence(double value) { this->persistence = value; return shared_from_this(); }
-	Ptr setLacunarity(double value) { this->lacunarity = value; return shared_from_this(); }
+}; // class NoiseMap;
+
+class RandomNoiseMap : public NoiseMap {
+public:
+	RandomNoiseMap* setSeed(std::string seed) { this->seed = seed; return this; }
+	RandomNoiseMap* setGridSize(double value) { this->gridSizeX = value; this->gridSizeY = value; return this; }
+	RandomNoiseMap* setGridSize(double width, double height) { this->gridSizeX = width; this->gridSizeY = height; return this; }
+	RandomNoiseMap* setGridWidth(double value) { this->gridSizeX = value; return this; }
+	RandomNoiseMap* setGridHeight(double value) { this->gridSizeY = value; return this; }
+	RandomNoiseMap* setOctaves(int value) { this->octaves = value; return this; }
+	RandomNoiseMap* setFrequency(double value) { this->frequency = value; return this; }
+	RandomNoiseMap* setPersistence(double value) { this->persistence = value; return this; }
+	RandomNoiseMap* setLacunarity(double value) { this->lacunarity = value; return this; }
 
 	std::string getSeed() { return seed; }
 	double getGridWidth() { return gridSizeX; }
@@ -58,21 +69,11 @@ public:
 	double getFrequency() { return frequency; }
 	double getPersistence() { return persistence; }
 	double getLacunarity() { return lacunarity; }
-	bool isGenerated() { return generated; }
-	bool isGenerated(int chunkWidth, int chunkHeight, int chunkX, int chunkY);
-
-	Ptr add(Ptr noiseMap, int factor);
-
-	Ptr generate(int width, int height, int chunkX = 0, int chunkY = 0);
-
-	double getValue(int x, int y) { return noiseVals[y][x]; }
-	std::vector<std::vector<double>> getValues() { return noiseVals; }
 
 private:
-	friend class Constraint;
+	friend class World;
 
-	NoiseMap();
-	NoiseMap(bool combination);
+	RandomNoiseMap();
 
 	std::string seed;
 	double gridSizeX, gridSizeY;
@@ -81,41 +82,21 @@ private:
 	double persistence;
 	double lacunarity;
 
-	bool isCombination;
-	std::vector<std::pair<Ptr, int>> combinations;
+}; // class RandomNoiseMap : public NoiseMap;
 
-	void genNormal();
-	void genCombination();
+class CombinationNoiseMap : public NoiseMap {
+public:
+	CombinationNoiseMap* add(NoiseMap* mapToAdd, int factor);
 
-	bool generated;
+private:
+	friend class World;
 
-	std::vector<std::vector<double>> noiseVals;
+	CombinationNoiseMap();
 
-	int chunkX, chunkY, chunkWidth, chunkHeight;
+	std::vector<std::pair<NoiseMap*, int>> combinations;
 
-}; // class NoiseMap;
+}; // class CombinationNoiseMap : public NoiseMap;
 
 WG_NS_END
-
-#include "constraint.hpp"
-
-wg::Constraint operator<(wg::NoiseMap::Ptr lhs, double rhs);
-wg::Constraint operator>(wg::NoiseMap::Ptr lhs, double rhs);
-
-#ifdef WG_BUILD_OPS
-#ifndef WG_IMP_NOISEMAP
-
-wg::Constraint operator<(wg::NoiseMap::Ptr lhs, double rhs) {
-	return wg::Constraint(lhs, wg::Constraint::Type::LT, rhs);
-
-} // Constraint operator<(NoiseMap::Ptr lhs, double rhs);
-
-wg::Constraint operator>(wg::NoiseMap::Ptr lhs, double rhs) {
-	return wg::Constraint(lhs, wg::Constraint::Type::GT, rhs);
-
-} // Constraint operator<(NoiseMap::Ptr lhs, double rhs);
-
-#endif // WG_IMP_NOISEMAP
-#endif // WG_BUILD_OPS
 
 #endif // WG_NOISEMAP_HPP

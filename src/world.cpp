@@ -19,51 +19,27 @@
 /////////////////////////////////////////////////////////////////////////////
 
 #include "inc/world.hpp"
+#include "inc/noisemap.hpp"
 
 WG_NS
 
-World::~World() {
-	for(auto& tDef : tileDefinitions) {
-		tDef.reset();
+World::World() 
+	: chunkWidth(WG_DEF_CHUNK), chunkHeight(WG_DEF_CHUNK) {
 
-	} // for(auto& tDef : tileDefinitions);
+} // World::World();
 
-	tileDefinitions.clear();
+RandomNoiseMap* World::addRandomNoiseMap() {
+	noiseMaps.push_back(new RandomNoiseMap);
 
-} // World::~World();
+	return static_cast<RandomNoiseMap*>(noiseMaps.back());
 
-TileDef::Ptr World::newTile() {
-	tileDefinitions.push_back(TileDef::Ptr(new TileDef()));
+} // RandomNoiseMap* World::addRandomNoiseMap();
 
-	return tileDefinitions.back();
+CombinationNoiseMap* World::addCombinationNoiseMap() {
+	noiseMaps.push_back(new CombinationNoiseMap);
 
-} // TileDef::Ptr World::newTile();
+	return static_cast<CombinationNoiseMap*>(noiseMaps.back());
 
-World::Ptr World::generate(int chunkX, int chunkY) {
-	mapGrid.clear();
-	mapGrid.resize(chunkHeight);
-	for(auto& row : mapGrid) {
-		row.resize(chunkWidth, TileDef::nextId);
-
-	} // for(auto& row : mapGrid);
-
-	for(int y = 0; y < chunkHeight; ++y) {
-		for(int x = 0; x < chunkWidth; ++x) {
-			for(auto& tDef : tileDefinitions) {
-				if(tDef->isValid(chunkWidth, chunkHeight, chunkX, chunkY, x, y)) {
-					mapGrid[y][x] = tDef->id;
-					break;
-
-				} // if(tDef->isValid(chunkX, chunkY, x, y));
-
-			} // for(auto& tDef : tileDefinitions);
-
-		} // for(int y = 0; y < chunkHeight; ++y);
-
-	} // for(int x = 0; x < chunkWidth; ++x);
-
-	return shared_from_this();
-
-} // World::Ptr World::generate(int chunkX, int chunkY);
+} // CombinationNoiseMap* World::addCombinationNoiseMap();
 
 WG_NS_END

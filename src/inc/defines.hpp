@@ -24,6 +24,8 @@
 #define WG_NS namespace wg {
 #define WG_NS_END }
 
+#define WG_DEF_CHUNK 20
+
 #define WG_DEF_SEED "0"
 #define WG_DEF_GRID 1
 #define WG_DEF_OCTAVES noise::module::DEFAULT_PERLIN_OCTAVE_COUNT
