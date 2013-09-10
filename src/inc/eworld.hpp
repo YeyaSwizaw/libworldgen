@@ -43,7 +43,7 @@ public:
 
 	EnhancedWorld<_tp>* generate(int xChunk, int yChunk);
 
-	_tp getObject(int x, int y) { return mappedObjects[y][x]; }
+	_tp getObject(int x, int y) { return mappedObjMap[y][x]; }
 	std::vector<std::vector<_tp>> getObjects() { return mappedObjMap; }
 
 private:
