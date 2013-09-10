@@ -38,14 +38,17 @@ TileDef* EnhancedWorld<_tp>::addTileDefinition(_tp object) {
 
 template<typename _tp>
 EnhancedWorld<_tp>* EnhancedWorld<_tp>::generate(int xChunk, int yChunk) {
+	this->clearNoiseMaps();
+	mappedObjMap.clear();
+
 	for(NoiseMap* nMap : this->noiseMaps) {
 		if(!nMap->generated) {
 			if(nMap->combination) {
-				this->generateCombination(static_cast<CombinationNoiseMap*>(nMap));
+				this->generateCombination(static_cast<CombinationNoiseMap*>(nMap), xChunk, yChunk);
 
 			} // if(nMap->combination);
 			else {
-				this->generateRandom(static_cast<RandomNoiseMap*>(nMap));
+				this->generateRandom(static_cast<RandomNoiseMap*>(nMap), xChunk, yChunk);
 
 			} // else;
 

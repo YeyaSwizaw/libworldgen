@@ -44,17 +44,27 @@ CombinationNoiseMap* WorldBase<_t>::addCombinationNoiseMap() {
 } // CombinationNoiseMap* WorldBase<_t>::addCombinationNoiseMap();
 
 template<typename _t>
-void WorldBase<_t>::generateRandom(RandomNoiseMap* nMap) {
+void WorldBase<_t>::clearNoiseMaps() {
+	for(NoiseMap* nMap : noiseMaps) {
+		nMap->generated = false;
+		nMap->noiseVals.clear();
+
+	} // for(NoiseMap* nMap : noiseMaps);
+
+} // void WorldBase<_t>::clearNoiseMaps();
+
+template<typename _t>
+void WorldBase<_t>::generateRandom(RandomNoiseMap* nMap, int xChunk, int yChunk) {
 	perlinModule.SetSeed(std::hash<std::string>()(nMap->seed));
 	perlinModule.SetOctaveCount(nMap->octaves);
 	perlinModule.SetFrequency(nMap->frequency);
 	perlinModule.SetPersistence(nMap->persistence);
 	perlinModule.SetLacunarity(nMap->lacunarity);
 
-	for(int y = 0; y < chunkHeight; ++y) {
+	for(int y = yChunk * chunkHeight; y < (yChunk + 1) * chunkHeight; ++y) {
 		nMap->noiseVals.push_back(std::vector<double>());
 
-		for(int x = 0; x < chunkWidth; ++x) {
+		for(int x = xChunk * chunkWidth; x < (xChunk + 1) * chunkWidth; ++x) {
 			nMap->noiseVals.back().push_back(perlinModule.GetValue(x * nMap->gridSizeX, y * nMap->gridSizeY, 0));
 
 		} // for(int x = 0; x < chunkWidth; ++x);
@@ -66,7 +76,7 @@ void WorldBase<_t>::generateRandom(RandomNoiseMap* nMap) {
 } // void WorldBase<_t>::generateRandom(RandomNoiseMap* nMap);
 
 template<typename _t>
-void WorldBase<_t>::generateCombination(CombinationNoiseMap* nMap) {
+void WorldBase<_t>::generateCombination(CombinationNoiseMap* nMap, int xChunk, int yChunk) {
 	int factor = 0;
 
 	nMap->noiseVals.resize(chunkHeight);
@@ -78,11 +88,11 @@ void WorldBase<_t>::generateCombination(CombinationNoiseMap* nMap) {
 	for(auto& combPair : nMap->combinations) {
 		if(!combPair.first->generated) {
 			if(combPair.first->combination) {
-				generateCombination(static_cast<CombinationNoiseMap*>(combPair.first));
+				generateCombination(static_cast<CombinationNoiseMap*>(combPair.first), xChunk, yChunk);
 
 			} // if(combPair.first->combination);
 			else {
-				generateRandom(static_cast<RandomNoiseMap*>(combPair.first));
+				generateRandom(static_cast<RandomNoiseMap*>(combPair.first), xChunk, yChunk);
 
 			} // else;
 

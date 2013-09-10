@@ -36,15 +36,16 @@ TileDef* World::addTileDefinition() {
 } // TileDef* World::addTileDefinition();
 
 World* World::generate(int xChunk, int yChunk) {
-	// First generate all noisemaps
+	clearNoiseMaps();
+
 	for(NoiseMap* nMap : noiseMaps) {
 		if(!nMap->generated) {
 			if(nMap->combination) {
-				generateCombination(static_cast<CombinationNoiseMap*>(nMap));
+				generateCombination(static_cast<CombinationNoiseMap*>(nMap), xChunk, yChunk);
 
 			} // if(nMap->combination);
 			else {
-				generateRandom(static_cast<RandomNoiseMap*>(nMap));
+				generateRandom(static_cast<RandomNoiseMap*>(nMap), xChunk, yChunk);
 
 			} // else;
 

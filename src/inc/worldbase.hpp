@@ -59,8 +59,9 @@ protected:
 
 	std::vector<std::vector<unsigned int>> mapGrid;
 
-	void generateRandom(RandomNoiseMap* nMap);
-	void generateCombination(CombinationNoiseMap* nMap);
+	void clearNoiseMaps();
+	void generateRandom(RandomNoiseMap* nMap, int xChunk, int yChunk);
+	void generateCombination(CombinationNoiseMap* nMap, int xChunk, int yChunk);
 	void setTiles();
 
 }; // class WorldBase;
