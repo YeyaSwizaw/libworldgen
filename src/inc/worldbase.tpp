@@ -87,14 +87,16 @@ void WorldBase<_t>::generateCombination(CombinationNoiseMap* nMap, int xChunk, i
 
 	for(auto& combPair : nMap->combinations) {
 		if(!combPair.first->generated) {
-			if(combPair.first->combination) {
-				generateCombination(static_cast<CombinationNoiseMap*>(combPair.first), xChunk, yChunk);
+			switch(combPair.first->mapType) {
+				case NoiseMap::MapType::Random:
+					generateRandom(static_cast<RandomNoiseMap*>(combPair.first), xChunk, yChunk);
+					break;
 
-			} // if(combPair.first->combination);
-			else {
-				generateRandom(static_cast<RandomNoiseMap*>(combPair.first), xChunk, yChunk);
+				case NoiseMap::MapType::Combination:
+					generateCombination(static_cast<CombinationNoiseMap*>(combPair.first), xChunk, yChunk);
+					break;
 
-			} // else;
+			} // switch(combPair.mapType);
 
 		} // if(!combPair.first->generated);
 

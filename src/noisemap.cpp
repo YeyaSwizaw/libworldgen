@@ -22,13 +22,13 @@
 
 WG_NS
 
-NoiseMap::NoiseMap(bool combination) 
-	: combination(combination), generated(false) {
+NoiseMap::NoiseMap(MapType mapType) 
+	: mapType(mapType), generated(false) {
 
-} // NoiseMap::NoiseMap(bool combination);
+} // NoiseMap::NoiseMap(MapType mapType);
 
 RandomNoiseMap::RandomNoiseMap()
-	: NoiseMap(false),
+	: NoiseMap(MapType::Random),
 
 	  seed(WG_DEF_SEED),
 	  gridSizeX(WG_DEF_GRID), gridSizeY(WG_DEF_GRID),
@@ -40,7 +40,7 @@ RandomNoiseMap::RandomNoiseMap()
 } // RandomNoiseMap::RandomNoiseMap();
 
 CombinationNoiseMap::CombinationNoiseMap()
-	: NoiseMap(true) {
+	: NoiseMap(MapType::Combination) {
 
 } // CombinationNoiseMap::CombinationNoiseMap();
 

@@ -43,14 +43,16 @@ EnhancedWorld<_tp>* EnhancedWorld<_tp>::generate(int xChunk, int yChunk) {
 
 	for(NoiseMap* nMap : this->noiseMaps) {
 		if(!nMap->generated) {
-			if(nMap->combination) {
-				this->generateCombination(static_cast<CombinationNoiseMap*>(nMap), xChunk, yChunk);
+			switch(nMap->mapType) {
+				case NoiseMap::MapType::Random:
+					this->generateRandom(static_cast<RandomNoiseMap*>(nMap), xChunk, yChunk);
+					break;
 
-			} // if(nMap->combination);
-			else {
-				this->generateRandom(static_cast<RandomNoiseMap*>(nMap), xChunk, yChunk);
+				case NoiseMap::MapType::Combination:
+					this->generateCombination(static_cast<CombinationNoiseMap*>(nMap), xChunk, yChunk);
+					break;
 
-			} // else;
+			} // switch(nMap->mapType);
 
 		} // if(!nMap->generated);
 

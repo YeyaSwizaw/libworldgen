@@ -40,14 +40,16 @@ World* World::generate(int xChunk, int yChunk) {
 
 	for(NoiseMap* nMap : noiseMaps) {
 		if(!nMap->generated) {
-			if(nMap->combination) {
-				generateCombination(static_cast<CombinationNoiseMap*>(nMap), xChunk, yChunk);
+			switch(nMap->mapType) {
+				case NoiseMap::MapType::Random:
+					generateRandom(static_cast<RandomNoiseMap*>(nMap), xChunk, yChunk);
+					break;
 
-			} // if(nMap->combination);
-			else {
-				generateRandom(static_cast<RandomNoiseMap*>(nMap), xChunk, yChunk);
+				case NoiseMap::MapType::Combination:
+					generateCombination(static_cast<CombinationNoiseMap*>(nMap), xChunk, yChunk);
+					break;
 
-			} // else;
+			} // switch(nMap->mapType);
 
 		} // if(!nMap->generated);
 

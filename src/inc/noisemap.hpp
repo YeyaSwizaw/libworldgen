@@ -41,15 +41,23 @@ template<typename _tp>
 class EnhancedWorld;
 
 class NoiseMap {
-protected:
-	NoiseMap(bool combination);
-
 public:
-	bool isCombination() { return combination; }
+	enum MapType {
+		Random,
+		Combination,
+		Selector
+
+	}; // enum MapType;
+
+	MapType getType() { return mapType; }
+	bool isCombination() { return !(mapType == MapType::Random); }
 	bool isGenerated() { return generated; }
 
 	double getValue(int x, int y) { return noiseVals[y][x]; }
 	std::vector<std::vector<double>> getValues() { return noiseVals; }
+
+protected:
+	NoiseMap(MapType mapType);
 
 private:
 	friend class TileDef;
@@ -61,7 +69,8 @@ private:
 	template<typename _tp>
 	friend class EnhancedWorld;
 
-	bool combination, generated;
+	MapType mapType;
+	bool generated;
 	std::vector<std::vector<double>> noiseVals;
 
 }; // class NoiseMap;
