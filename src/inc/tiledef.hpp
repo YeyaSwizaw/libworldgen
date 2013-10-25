@@ -18,6 +18,8 @@
 //// Author: Samuel Sleight <samuel(dot)sleight(at)gmail(dot)com>
 ///////////////////////////////////////////////////////////////////////////////
 
+/** @file */
+
 #ifndef WG_TILEDEF_HPP
 #define WG_TILEDEF_HPP
 
@@ -37,11 +39,28 @@ class WorldBase;
 template<typename _tp>
 class EnhancedWorld;
 
+/**
+ * Different types of constraint.
+ * GT = >; LT = <
+ */
 enum ConstraintType {
 	GT, LT
 
 }; // enum ConstraintType;
 
+/**
+ * TileDef Constraint.
+ * Specifies the constraints for a particular tile. To create one, do:
+ *
+ *     tile->addConstraint({ NoiseMap*, ConstraintType, double });
+ *
+ * The NoiseMap* is the NoiseMap the constraint is about, the ConstraintType is
+ * the type of constraint, and the double is the value. For example,
+ *
+ *     tile->addConstraint({ heightmap, ConstraintType::GT, 0.7 });
+ *
+ * means where the heightmap is greater than 0.7.
+ */
 struct Constraint {
 	NoiseMap* nMap;
 	ConstraintType type;
@@ -51,8 +70,21 @@ struct Constraint {
 
 class TileDef {
 public:
+	/**
+	 * Adds a constraint to the tile.
+	 * See Constraint
+	 *
+	 * @param c The constraint to be added.
+	 * @return this, for method chaining.
+	 */
 	TileDef* addConstraint(Constraint c) { constraints.push_back(c); return this; }
 
+	/**
+	 * Gets the tile id.
+	 * The id is the value that is placed in the generated map.
+	 *
+	 * @return The tiles id.
+	 */
 	unsigned int getId() { return id; }
 
 private:

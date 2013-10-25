@@ -33,18 +33,85 @@
 
 WG_NS
 
+/**
+ * The base class for all world types (World and EnhancedWorld). This class
+ * should not be used directly - the classes that inherit from it should be
+ * used instead.
+ *
+ * @tparam _t The world type that inherits this class, so the functions know
+ * what type to return for method chaining.
+ */
 template<typename _t>
 class WorldBase {
 public:
+	/** 
+	 * Sets the size of the generated world chunk.
+	 *
+	 * @param width The width of the chunk.
+	 * @param height The height of the chunk.
+	 * @return this, for method chaining.
+	 */
 	_t* setChunkSize(int width, int height) { chunkWidth = width; chunkHeight = height; return static_cast<_t*>(this); }
+
+	/**
+	 * Sets the size of the generated world chunk.
+	 *
+	 * @param value The width and height of the chunk.
+	 * @return this, for method chaining.
+	 */
 	_t* setChunkSize(int value) { chunkWidth = value; chunkHeight = value; return static_cast<_t*>(this); }
+
+	/**
+	 * Sets the width of the generated world chunk.
+	 *
+	 * @param value The width of the chunk.
+	 * @return this, for method chaining.
+	 */
 	_t* setChunkWidth(int value) { chunkWidth = value; return static_cast<_t*>(this); }
+
+	/**
+	 * Sets the height of the generated world chunk.
+	 *
+	 * @param value The height of the chunk.
+	 * @return this, for method chaining.
+	 */
 	_t* setChunkHeight(int value) { chunkHeight = value; return static_cast<_t*>(this); }
 
+	/**
+	 * Adds a new RandomNoiseMap.
+	 * Creates a new RandomNoiseMap, adds a pointer to the noiseMaps vector,
+	 * and returns a pointer.
+	 * 
+	 * @return A pointer to the new RandomNoiseMap.
+	 */
 	RandomNoiseMap* addRandomNoiseMap();
+
+	/**
+	 * Adds a new CombinationNoiseMap.
+	 * Creates a new CombinationNoiseMap, adds a pointer to the noiseMaps vector,
+	 * and returns a pointer.
+	 * 
+	 * @return A pointer to the new CombinationNoiseMap.
+	 */
 	CombinationNoiseMap* addCombinationNoiseMap();
 
+	/**
+	 * Gets the generated world.
+	 * Gets the complete generated world, as a vector of vectors of tile ids.
+	 * The vector is of rows, so should be accessed y, then x.
+	 *
+	 * @return The generated world.
+	 */
 	std::vector<std::vector<unsigned int>> getMap() { return this->mapGrid; }
+
+	/**
+	 * Gets a specific tile.
+	 * Gets the id of the tile at a specific coordinate;
+	 *
+	 * @param x The x coordinate of the tile.
+	 * @param y The y coordinate of the tile.
+	 * @return The id of the tile.
+	 */
 	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
 
 protected:
