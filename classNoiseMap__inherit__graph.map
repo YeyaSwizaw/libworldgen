@@ -1,0 +1,4 @@
+<map id="NoiseMap" name="NoiseMap">
+<area shape="rect" id="node2" href="$classCombinationNoiseMap.html" title="A combination of other noisemaps. " alt="" coords="5,80,168,107"/>
+<area shape="rect" id="node3" href="$classRandomNoiseMap.html" title="This class is a randomly generated noisemap. " alt="" coords="193,80,332,107"/>
+</map>

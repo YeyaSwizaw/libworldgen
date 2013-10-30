@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classNoiseMap.html" title="The base noise map class. " alt="" coords="6,31,93,57"/>
+<area shape="rect" id="node2" href="$classCombinationNoiseMap.html" title="A combination of other noisemaps. " alt="" coords="142,5,306,32"/>
+<area shape="rect" id="node3" href="$classRandomNoiseMap.html" title="This class is a randomly generated noisemap. " alt="" coords="155,56,293,83"/>
+</map>
