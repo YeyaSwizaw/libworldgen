@@ -114,6 +114,20 @@ public:
 	 */
 	unsigned int getTile(int x, int y) { return mapGrid[y][x]; }
 
+    /**
+     * Gets the width of the generated world chunk.
+     *
+     * @return The chunk width.
+     */
+    int getChunkWidth() { return chunkWidth; }
+
+    /**
+     * Gets the height of the generated world chunk.
+     *
+     * @return The chunk height.
+     */
+    int getChunkHeight() { return chunkHeight; }
+
 protected:
 	WorldBase();
 
