@@ -130,6 +130,7 @@ public:
 
 protected:
 	WorldBase();
+    virtual ~WorldBase();
 
 	int chunkWidth, chunkHeight;
 

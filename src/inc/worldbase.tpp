@@ -28,6 +28,17 @@ WorldBase<_t>::WorldBase()
 } // WorldBase<_t>::WorldBase();
 
 template<typename _t>
+WorldBase<_t>::~WorldBase() {
+    for(auto* nm : noiseMaps) {
+        delete nm;
+    }
+
+    for(auto* td : tileDefinitions) {
+        delete td;
+    }
+}
+
+template<typename _t>
 RandomNoiseMap* WorldBase<_t>::addRandomNoiseMap() {
 	noiseMaps.push_back(new RandomNoiseMap);
 
